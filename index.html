@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocab Express - Vocabulario por Páginas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --card-border: #e2e8f0;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent-pink: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --input-bg: #ffffff;
+            --shadow-color: rgba(15, 23, 42, 0.08);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-light);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(236, 72, 153, 0.06) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem 1rem;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+        }
+
+        /* HEADER BRANDING */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-title i {
+            color: var(--primary);
+        }
+
+        /* PAGE SELECTOR CONTROL */
+        .page-select-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.5rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .page-select-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            grid-column: 1 / -1;
+            margin-bottom: 0.2rem;
+        }
+
+        .word-count-badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .page-select-dropdown,
+        .range-select-dropdown {
+            width: 100%;
+            padding: 0.5rem 0.6rem;
+            border-radius: 0.6rem;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .page-select-dropdown:focus,
+        .range-select-dropdown:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .range-info {
+            font-size: 0.65rem;
+            color: var(--text-sub);
+            margin-top: 0.15rem;
+            font-weight: 600;
+            grid-column: 1 / -1;
+        }
+
+        /* MODE TOGGLE SWITCH */
+        .mode-toggle-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 0.85rem 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+
+        .mode-info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .mode-info i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .mode-sublabel {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            display: block;
+        }
+
+        /* TOGGLE SWITCH UI */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* FLASHCARD 3D WRAPPER */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            margin-bottom: 1.25rem;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            min-height: 420px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flashcard-wrapper.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            width: 100%;
+            height: 100%;
+            min-height: 420px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 12px 30px var(--shadow-color);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            margin: 0.5rem 0;
+        }
+
+        .card-footer-action {
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .flashcard-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotateY(180deg);
+        }
+
+        /* WORD CONTENT */
+        .category-badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .word-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .word-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .btn-audio {
+            width: 100%;
+            padding: 0.85rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.85rem;
+            color: #475569;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-audio:hover {
+            background: #e0e7ff;
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+        }
+
+        .btn-audio:active { transform: scale(0.98); }
+
+        /* INPUT FIELD */
+        .input-group {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: var(--input-bg);
+            border: 2px solid #cbd5e1;
+            border-radius: 0.85rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .answer-input.correct {
+            border-color: var(--success);
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .answer-input.wrong {
+            border-color: var(--danger);
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* FEEDBACK AREA */
+        .feedback-message {
+            min-height: 1.8rem;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.2s ease;
+        }
+
+        .feedback-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-message.success { color: #059669; }
+        .feedback-message.error { color: #dc2626; }
+
+        /* BUTTON LAYOUT */
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.85rem;
+            border: none;
+            border-radius: 0.85rem;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-subtle {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: var(--text-sub);
+        }
+
+        .btn-subtle:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.28);
+            width: 100%;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.38);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active { transform: translateY(0); }
+
+        /* REVEAL BACK CARD CONTENT */
+        .revealed-english {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+
+        .revealed-spanish {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            font-weight: 800;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        /* FOOTER & SHORTCUTS */
+        .app-footer {
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .shortcut-text {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            text-decoration: underline;
+        }
+
+        .btn-reset:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER BRANDING -->
+        <div class="app-header">
+            <div class="app-title">
+                <i class="fas fa-brain"></i>
+                <span>Vocab Express</span>
+            </div>
+        </div>
+
+        <!-- PAGE & RANGE SELECTOR -->
+        <div class="page-select-card">
+            <div class="page-select-label">
+                <span><i class="fas fa-book-open" style="margin-right: 0.3rem; color: var(--primary);"></i> Selecciona página</span>
+                <span class="word-count-badge" id="wordCountBadge">0 palabras</span>
+            </div>
+            <select class="page-select-dropdown" id="pageSelect" onchange="onPageChange()">
+                <!-- Populated via JavaScript -->
+            </select>
+            <select class="range-select-dropdown" id="rangeSelect" onchange="onRangeChange()">
+                <!-- Populated via JavaScript -->
+            </select>
+            <div class="range-info" id="rangeInfo"></div>
+        </div>
+
+        <!-- MODE TOGGLE CARD -->
+        <div class="mode-toggle-card">
+            <div class="mode-info">
+                <i class="fas fa-repeat"></i>
+                <div>
+                    <div>Modo Flashcard (Inglés ➔ Español)</div>
+                    <span class="mode-sublabel" id="modeStatusText">Desactivado (Escribir en Inglés)</span>
+                </div>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="modeToggle" onchange="toggleMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- SINGLE 3D FLASHCARD -->
+        <div class="flashcard-wrapper" id="cardWrapper">
+            <div class="flashcard-inner">
+                
+                <!-- FRONT FACE: WRITE OR FLIP -->
+                <div class="flashcard-face" id="frontCard">
+                    <span class="category-badge" id="categoryBadge">Cargando...</span>
+                    
+                    <div class="card-body-content">
+                        <div class="word-title" id="spanishWord">Cargando...</div>
+                        <div class="word-subtitle" id="cardSubtitle">Traduce la palabra al inglés</div>
+
+                        <!-- Audio Button -->
+                        <button class="btn-audio" onclick="playPronunciation()">
+                            <i class="fas fa-volume-high"></i>
+                            <span>Escuchar Pronunciación</span>
+                            <span style="opacity:0.5; font-size:0.7rem; margin-left:auto">[Espacio]</span>
+                        </button>
+
+                        <!-- Text Input -->
+                        <div class="input-group" id="inputContainer">
+                            <input type="text" id="answerInput" placeholder="Escribe en inglés..." autocomplete="off" spellcheck="false">
+                        </div>
+
+                        <!-- Feedback Area -->
+                        <div class="feedback-message" id="feedbackMessage"></div>
+
+                        <!-- Action Row: Flip / Skip -->
+                        <div class="action-row" id="actionRow">
+                            <button class="btn btn-subtle" onclick="flipCard()">
+                                <i class="fas fa-eye"></i> Ver Palabra
+                            </button>
+                            <button class="btn btn-subtle" onclick="skipWord()">
+                                <i class="fas fa-forward"></i> Saltar [→]
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Primary Action Button Container -->
+                    <div class="card-footer-action">
+                        <button class="btn btn-primary" id="mainActionBtn" onclick="handleMainAction()">
+                            <i class="fas fa-check" id="mainBtnIcon"></i> <span id="mainBtnText">Verificar (Enter)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: REVEALED FLASHCARD -->
+                <div class="flashcard-face flashcard-back">
+                    <span class="category-badge" id="categoryBadgeBack">Cargando...</span>
+                    
+                    <div class="card-body-content">
+                        <div class="word-subtitle" id="backSubtitle" style="margin-top:0.2rem;">Traducción en español:</div>
+                        <div class="revealed-spanish" id="revealedSpanish">Español</div>
+                        <div class="word-subtitle" style="margin-top: 0.8rem; margin-bottom: 0.2rem;">Palabra en inglés:</div>
+                        <div class="revealed-english" id="englishWord">English</div>
+
+                        <button class="btn-audio" onclick="playPronunciation()" style="margin-top: 0.5rem; width:100%;">
+                            <i class="fas fa-volume-high"></i>
+                            <span>Escuchar Pronunciación</span>
+                        </button>
+                    </div>
+
+                    <!-- Primary Action Button Container -->
+                    <div class="card-footer-action">
+                        <button class="btn btn-primary" onclick="flipBackAndNext()">
+                            <i class="fas fa-arrow-right"></i> Siguiente Palabra (Enter)
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER & SHORTCUTS -->
+        <div class="app-footer">
+            <div class="shortcut-text">
+                <span>⌨️ <b>Enter:</b> Responder / Siguiente</span>
+                <span>•</span>
+                <span><b>Espacio:</b> Audio</span>
+                <span>•</span>
+                <span><b>→:</b> Saltar</span>
+            </div>
+            <button class="btn-reset" onclick="resetProgress()">Reiniciar este mazo</button>
+        </div>
+
+    </div>
+
+    <script>
+        const pageNames = {
+        3: "La familia y presentaciones",
+        4: "El Colegio",
+        6: "El cuerpo humano - Primera parte",
+        7: "El cuerpo humano - Segunda parte",
+        8: "La salud y los colores",
+        9: "El año y sus partes",
+        10: "El tiempo",
+        11: "Comidas y alimentos",
+        14: "Vestuario - Ropa",
+        17: "Ingredientes y utensilios para comer",
+        18: "Algunos verbos regulares",
+        19: "Otros verbos regulares",
+        20: "Sinónimos y antónimos",
+        21: "Algunos verbos irregulares",
+        22: "Mas verbos irregulares",
+        24: "Casa y hogar",
+        25: "La sala y la cocina",
+        26: "La alcoba y el baño",
+        27: "Mas verbos irregulares",
+        28: "Algunos verbos comunes de dos palabras",
+        29: "La ciudad",
+        30: "Comunicaciones",
+        31: "Transporte",
+        32: "Animales",
+        33: "Herramientas",
+        34: "Micelaneos"
+    };
+
+        const vocabData = [
+        // PÁGINA 03 (FAMILIA)
+        { english: "father", spanish: "padre", page: 3, type: "noun" },
+        { english: "dad", spanish: "papá", page: 3, type: "noun" },
+        { english: "daddy", spanish: "papi", page: 3, type: "noun" },
+        { english: "mother", spanish: "madre", page: 3, type: "noun" },
+        { english: "mom", spanish: "mamá", page: 3, type: "noun" },
+        { english: "mommy", spanish: "mami", page: 3, type: "noun" },
+        { english: "parents", spanish: "padres", page: 3, type: "noun" },
+        { english: "son", spanish: "hijo", page: 3, type: "noun" },
+        { english: "daughter", spanish: "hija", page: 3, type: "noun" },
+        { english: "grandfather", spanish: "abuelo", page: 3, type: "noun" },
+        { english: "grandmother", spanish: "abuela", page: 3, type: "noun" },
+        { english: "grandparents", spanish: "abuelos", page: 3, type: "noun" },
+        { english: "grandson", spanish: "nieto", page: 3, type: "noun" },
+        { english: "granddaughter", spanish: "nieta", page: 3, type: "noun" },
+        { english: "great-grandfather", spanish: "bisabuelo", page: 3, type: "noun" },
+        { english: "child", spanish: "niño", page: 3, type: "noun" },
+        { english: "children", spanish: "niños, hijos", page: 3, type: "noun" },
+        { english: "kids", spanish: "niños", page: 3, type: "noun" },
+        { english: "boy", spanish: "muchacho", page: 3, type: "noun" },
+        { english: "girl", spanish: "muchacha", page: 3, type: "noun" },
+        { english: "baby", spanish: "bebé", page: 3, type: "noun" },
+        { english: "brother", spanish: "hermano", page: 3, type: "noun" },
+        { english: "sister", spanish: "hermana", page: 3, type: "noun" },
+        { english: "sibling", spanish: "hermano(a)", page: 3, type: "noun" },
+        { english: "uncle", spanish: "tío", page: 3, type: "noun" },
+        { english: "aunt", spanish: "tía", page: 3, type: "noun" },
+        { english: "cousin", spanish: "primo, prima", page: 3, type: "noun" },
+        { english: "nephew", spanish: "sobrino", page: 3, type: "noun" },
+        { english: "niece", spanish: "sobrina", page: 3, type: "noun" },
+        { english: "father-in-law", spanish: "suegro", page: 3, type: "noun" },
+        { english: "mother-in-law", spanish: "suegra", page: 3, type: "noun" },
+        { english: "brother-in-law", spanish: "cuñado", page: 3, type: "noun" },
+        { english: "sister-in-law", spanish: "cuñada", page: 3, type: "noun" },
+        { english: "son-in-law", spanish: "yerno", page: 3, type: "noun" },
+        { english: "daughter-in-law", spanish: "nuera", page: 3, type: "noun" },
+        { english: "stepfather", spanish: "padrastro", page: 3, type: "noun" },
+        { english: "stepmother", spanish: "madrastra", page: 3, type: "noun" },
+        { english: "friend", spanish: "amigo", page: 3, type: "noun" },
+        { english: "boyfriend", spanish: "novio", page: 3, type: "noun" },
+        { english: "girlfriend", spanish: "novia", page: 3, type: "noun" },
+        { english: "fiance", spanish: "prometido", page: 3, type: "noun" },
+        { english: "fiancee", spanish: "prometida", page: 3, type: "noun" },
+        { english: "groom", spanish: "novio", page: 3, type: "noun" },
+        { english: "bride", spanish: "novia", page: 3, type: "noun" },
+        { english: "best man", spanish: "padrino", page: 3, type: "noun" },
+        { english: "maid of honor", spanish: "madrina", page: 3, type: "noun" },
+        { english: "godfather", spanish: "padrino", page: 3, type: "noun" },
+        { english: "godmother", spanish: "madrina", page: 3, type: "noun" },
+        { english: "husband", spanish: "esposo", page: 3, type: "noun" },
+        { english: "wife", spanish: "esposa", page: 3, type: "noun" },
+        { english: "single", spanish: "soltero", page: 3, type: "noun" },
+        { english: "married", spanish: "casado", page: 3, type: "noun" },
+        { english: "family", spanish: "familia", page: 3, type: "noun" },
+        { english: "relatives", spanish: "parientes", page: 3, type: "noun" },
+        { english: "kin", spanish: "familia", page: 3, type: "noun" },
+        { english: "next of kin", spanish: "pariente más cercano", page: 3, type: "noun" },
+        { english: "in-laws", spanish: "parientes políticos", page: 3, type: "noun" },
+        { english: "twins", spanish: "mellizos", page: 3, type: "noun" },
+
+        // PÁGINA 04 (ESCUELA)
+        { english: "school", spanish: "escuela", page: 4, type: "noun" },
+        { english: "college", spanish: "universidad (institución)", page: 4, type: "noun" },
+        { english: "university", spanish: "universidad (educación superior)", page: 4, type: "noun" },
+        { english: "teacher", spanish: "profesor", page: 4, type: "noun" },
+        { english: "student", spanish: "estudiante", page: 4, type: "noun" },
+        { english: "classroom", spanish: "salón de clases", page: 4, type: "noun" },
+        { english: "board", spanish: "tabla", page: 4, type: "noun" },
+        { english: "blackboard", spanish: "tablero (negro)", page: 4, type: "noun" },
+        { english: "greenboard", spanish: "tablero (verde)", page: 4, type: "noun" },
+        { english: "bulletin board", spanish: "cartelera", page: 4, type: "noun" },
+        { english: "billboard", spanish: "valla publicitaria", page: 4, type: "noun" },
+        { english: "compass", spanish: "compás, brújula", page: 4, type: "noun" },
+        { english: "chalk", spanish: "tiza", page: 4, type: "noun" },
+        { english: "pen", spanish: "lapicero", page: 4, type: "noun" },
+        { english: "pencil", spanish: "lápiz", page: 4, type: "noun" },
+        { english: "eraser", spanish: "borrador", page: 4, type: "noun" },
+        { english: "book", spanish: "libro", page: 4, type: "noun" },
+        { english: "notebook", spanish: "cuaderno", page: 4, type: "noun" },
+        { english: "paper", spanish: "papel", page: 4, type: "noun" },
+        { english: "clip", spanish: "clip (sujetapapeles)", page: 4, type: "noun" },
+        { english: "thumbtack", spanish: "chinche", page: 4, type: "noun" },
+        { english: "ruler", spanish: "regla", page: 4, type: "noun" },
+        { english: "sharpener", spanish: "sacapuntas", page: 4, type: "noun" },
+        { english: "map", spanish: "mapa", page: 4, type: "noun" },
+        { english: "desk", spanish: "escritorio", page: 4, type: "noun" },
+        { english: "drawer", spanish: "cajón", page: 4, type: "noun" },
+        { english: "chair", spanish: "silla", page: 4, type: "noun" },
+        { english: "ink", spanish: "tinta", page: 4, type: "noun" },
+        { english: "test", spanish: "examen (prueba)", page: 4, type: "noun" },
+        { english: "exam", spanish: "examen (formal)", page: 4, type: "noun" },
+        { english: "examination", spanish: "examinación, examen completo", page: 4, type: "noun" },
+        { english: "grades", spanish: "notas (calificaciones)", page: 4, type: "noun" },
+        { english: "marks", spanish: "notas (puntajes)", page: 4, type: "noun" },
+        { english: "bell", spanish: "campana escolar", page: 4, type: "noun" },
+        { english: "lockers", spanish: "casilleros", page: 4, type: "noun" },
+        { english: "backpack", spanish: "morral, mochila", page: 4, type: "noun" },
+        { english: "subjects", spanish: "materias", page: 4, type: "noun" },
+        { english: "math", spanish: "matemáticas", page: 4, type: "noun" },
+        { english: "geometry", spanish: "geometría", page: 4, type: "noun" },
+        { english: "biology", spanish: "biología", page: 4, type: "noun" },
+        { english: "chemistry", spanish: "química", page: 4, type: "noun" },
+        { english: "geography", spanish: "geografía", page: 4, type: "noun" },
+        { english: "history", spanish: "historia", page: 4, type: "noun" },
+        { english: "languages", spanish: "idiomas", page: 4, type: "noun" },
+        { english: "science", spanish: "ciencias", page: 4, type: "noun" },
+        { english: "physics", spanish: "física", page: 4, type: "noun" },
+        { english: "philosophy", spanish: "filosofía", page: 4, type: "noun" },
+        { english: "psychology", spanish: "psicología", page: 4, type: "noun" },
+        { english: "religion", spanish: "religión", page: 4, type: "noun" },
+
+        // PÁGINA 06 (PARTES DEL CUERPO)
+        { english: "the head", spanish: "la cabeza", page: 6, type: "noun" },
+        { english: "skull", spanish: "cráneo", page: 6, type: "noun" },
+        { english: "brain", spanish: "cerebro", page: 6, type: "noun" },
+        { english: "hair", spanish: "pelo", page: 6, type: "noun" },
+        { english: "forehead", spanish: "frente", page: 6, type: "noun" },
+        { english: "face", spanish: "cara", page: 6, type: "noun" },
+        { english: "nose", spanish: "nariz", page: 6, type: "noun" },
+        { english: "nostrils", spanish: "fosas nasales", page: 6, type: "noun" },
+        { english: "ear", spanish: "oreja", page: 6, type: "noun" },
+        { english: "eyes", spanish: "ojos", page: 6, type: "noun" },
+        { english: "eyelash", spanish: "pestaña", page: 6, type: "noun" },
+        { english: "eyelid", spanish: "párpado", page: 6, type: "noun" },
+        { english: "eyebrow", spanish: "ceja", page: 6, type: "noun" },
+        { english: "mouth", spanish: "boca", page: 6, type: "noun" },
+        { english: "lips", spanish: "labios", page: 6, type: "noun" },
+        { english: "tongue", spanish: "lengua", page: 6, type: "noun" },
+        { english: "tooth", spanish: "diente", page: 6, type: "noun" },
+        { english: "teeth", spanish: "dientes", page: 6, type: "noun" },
+        { english: "gum", spanish: "encía", page: 6, type: "noun" },
+        { english: "tonsils", spanish: "amígdalas", page: 6, type: "noun" },
+        { english: "cheek", spanish: "mejilla", page: 6, type: "noun" },
+        { english: "chin", spanish: "barbilla", page: 6, type: "noun" },
+        { english: "jaw", spanish: "quijada", page: 6, type: "noun" },
+        { english: "mustache", spanish: "bigote", page: 6, type: "noun" },
+        { english: "beard", spanish: "barba", page: 6, type: "noun" },
+        { english: "marks", spanish: "marcas", page: 6, type: "noun" },
+        { english: "scar", spanish: "cicatriz", page: 6, type: "noun" },
+        { english: "mole", spanish: "lunar", page: 6, type: "noun" },
+        { english: "freckles", spanish: "pecas", page: 6, type: "noun" },
+        { english: "spot", spanish: "mancha (en la piel)", page: 6, type: "noun" },
+        { english: "pimple", spanish: "espinilla", page: 6, type: "noun" },
+        { english: "wrinkle", spanish: "arruga", page: 6, type: "noun" },
+        { english: "dimple", spanish: "hoyuelo", page: 6, type: "noun" },
+        { english: "bump", spanish: "chichón", page: 6, type: "noun" },
+        { english: "the trunk", spanish: "el tronco", page: 6, type: "noun" },
+        { english: "neck", spanish: "cuello", page: 6, type: "noun" },
+        { english: "throat", spanish: "garganta", page: 6, type: "noun" },
+        { english: "chest", spanish: "pecho (torso)", page: 6, type: "noun" },
+        { english: "breast", spanish: "pecho (seno)", page: 6, type: "noun" },
+        { english: "nipple", spanish: "pezón", page: 6, type: "noun" },
+        { english: "back", spanish: "espalda", page: 6, type: "noun" },
+        { english: "spine", spanish: "columna", page: 6, type: "noun" },
+        { english: "ribs", spanish: "costillas", page: 6, type: "noun" },
+        { english: "abdomen", spanish: "abdomen", page: 6, type: "noun" },
+        { english: "penis", spanish: "pene", page: 6, type: "noun" },
+        { english: "testicles", spanish: "testículos", page: 6, type: "noun" },
+        { english: "vagina", spanish: "vagina", page: 6, type: "noun" },
+        { english: "ovary", spanish: "ovario", page: 6, type: "noun" },
+        { english: "fallopian tubes", spanish: "trompas de Falopio", page: 6, type: "noun" },
+        { english: "uterus", spanish: "útero", page: 6, type: "noun" },
+        { english: "anus", spanish: "ano", page: 6, type: "noun" },
+
+        // PÁGINA 07 (CUERPO HUMANO)
+        { english: "the extremities", spanish: "las extremidades", page: 7, type: "noun" },
+        { english: "shoulder", spanish: "hombro", page: 7, type: "noun" },
+        { english: "arm", spanish: "brazo", page: 7, type: "noun" },
+        { english: "armpit", spanish: "axila", page: 7, type: "noun" },
+        { english: "forearm", spanish: "antebrazo", page: 7, type: "noun" },
+        { english: "elbow", spanish: "codo", page: 7, type: "noun" },
+        { english: "joint", spanish: "articulación", page: 7, type: "noun" },
+        { english: "wrist", spanish: "muñeca", page: 7, type: "noun" },
+        { english: "hand", spanish: "mano", page: 7, type: "noun" },
+        { english: "fist", spanish: "puño", page: 7, type: "noun" },
+        { english: "fingers", spanish: "dedos (de la mano)", page: 7, type: "noun" },
+        { english: "nails", spanish: "uñas", page: 7, type: "noun" },
+        { english: "knuckles", spanish: "nudillos", page: 7, type: "noun" },
+        { english: "hip", spanish: "cadera", page: 7, type: "noun" },
+        { english: "waist", spanish: "cintura", page: 7, type: "noun" },
+        { english: "bottoms", spanish: "nalgas (general)", page: 7, type: "noun" },
+        { english: "buttocks", spanish: "nalgas (anatómico)", page: 7, type: "noun" },
+        { english: "thigh", spanish: "muslo", page: 7, type: "noun" },
+        { english: "knee", spanish: "rodilla", page: 7, type: "noun" },
+        { english: "calf", spanish: "pantorrilla", page: 7, type: "noun" },
+        { english: "leg", spanish: "pierna", page: 7, type: "noun" },
+        { english: "foot", spanish: "pie (singular)", page: 7, type: "noun" },
+        { english: "feet", spanish: "pies (plural)", page: 7, type: "noun" },
+        { english: "toes", spanish: "dedos (del pie)", page: 7, type: "noun" },
+        { english: "ankles", spanish: "tobillos", page: 7, type: "noun" },
+        { english: "heels", spanish: "talones", page: 7, type: "noun" },
+        { english: "muscles", spanish: "músculos", page: 7, type: "noun" },
+        { english: "skin", spanish: "piel", page: 7, type: "noun" },
+        { english: "the internal organs", spanish: "los órganos internos", page: 7, type: "noun" },
+        { english: "heart", spanish: "corazón", page: 7, type: "noun" },
+        { english: "lungs", spanish: "pulmones", page: 7, type: "noun" },
+        { english: "stomach", spanish: "estómago", page: 7, type: "noun" },
+        { english: "intestines", spanish: "intestinos", page: 7, type: "noun" },
+        { english: "spleen", spanish: "bazo", page: 7, type: "noun" },
+        { english: "liver", spanish: "hígado", page: 7, type: "noun" },
+        { english: "gall", spanish: "bilis", page: 7, type: "noun" },
+        { english: "bladder", spanish: "vejiga", page: 7, type: "noun" },
+        { english: "gall bladder", spanish: "vesícula biliar", page: 7, type: "noun" },
+        { english: "pancreas", spanish: "páncreas", page: 7, type: "noun" },
+        { english: "kidneys", spanish: "riñones", page: 7, type: "noun" },
+        { english: "womb", spanish: "útero (matriz)", page: 7, type: "noun" },
+        { english: "bones", spanish: "huesos", page: 7, type: "noun" },
+        { english: "artery", spanish: "arteria", page: 7, type: "noun" },
+        { english: "vein", spanish: "vena", page: 7, type: "noun" },
+        { english: "colon", spanish: "colon", page: 7, type: "noun" },
+        { english: "body fluids", spanish: "líquidos del cuerpo", page: 7, type: "noun" },
+        { english: "blood", spanish: "sangre", page: 7, type: "noun" },
+        { english: "urine", spanish: "orina", page: 7, type: "noun" },
+        { english: "sperm", spanish: "semen", page: 7, type: "noun" },
+        { english: "spermatozoa", spanish: "espermatozoides", page: 7, type: "noun" },
+        { english: "saliva", spanish: "saliva", page: 7, type: "noun" },
+        { english: "tears", spanish: "lágrimas", page: 7, type: "noun" },
+        { english: "sleep", spanish: "lagaña", page: 7, type: "noun" },
+        { english: "boogers", spanish: "mocos", page: 7, type: "noun" },
+
+        // PÁGINA 08 (SALUD Y COLORES)
+        { english: "health", spanish: "salud", page: 8, type: "noun" },
+        { english: "healthy", spanish: "saludable", page: 8, type: "noun" },
+        { english: "weak", spanish: "débil", page: 8, type: "noun" },
+        { english: "strong", spanish: "fuerte", page: 8, type: "noun" },
+        { english: "ache", spanish: "dolor (persistente)", page: 8, type: "noun" },
+        { english: "pain", spanish: "dolor (general)", page: 8, type: "noun" },
+        { english: "sore", spanish: "adolorido", page: 8, type: "noun" },
+        { english: "sick", spanish: "enfermo", page: 8, type: "noun" },
+        { english: "sickness", spanish: "enfermedad (estado de estar enfermo)", page: 8, type: "noun" },
+        { english: "ill", spanish: "enfermo (formal)", page: 8, type: "noun" },
+        { english: "illness", spanish: "enfermedad (condición)", page: 8, type: "noun" },
+        { english: "disease", spanish: "enfermedad (específica)", page: 8, type: "noun" },
+        { english: "ailment", spanish: "dolencia", page: 8, type: "noun" },
+        { english: "headache", spanish: "dolor de cabeza", page: 8, type: "noun" },
+        { english: "toothache", spanish: "dolor de muela", page: 8, type: "noun" },
+        { english: "backache", spanish: "dolor de espalda", page: 8, type: "noun" },
+        { english: "sore throat", spanish: "dolor de garganta", page: 8, type: "noun" },
+        { english: "stomachache", spanish: "dolor de estómago", page: 8, type: "noun" },
+        { english: "symptoms", spanish: "síntomas", page: 8, type: "noun" },
+        { english: "fever", spanish: "fiebre", page: 8, type: "noun" },
+        { english: "temperature", spanish: "temperatura", page: 8, type: "noun" },
+        { english: "cold", spanish: "resfriado", page: 8, type: "noun" },
+        { english: "nausea", spanish: "náuseas", page: 8, type: "noun" },
+        { english: "dizzy", spanish: "mareado", page: 8, type: "noun" },
+        { english: "vomit", spanish: "vómito", page: 8, type: "noun" },
+        { english: "pills", spanish: "pastillas", page: 8, type: "noun" },
+        { english: "blind", spanish: "ciego", page: 8, type: "noun" },
+        { english: "deaf", spanish: "sordo", page: 8, type: "noun" },
+        { english: "mute", spanish: "mudo", page: 8, type: "noun" },
+        { english: "cross-eyed", spanish: "bizco", page: 8, type: "noun" },
+        { english: "one-eyed", spanish: "tuerto", page: 8, type: "noun" },
+        { english: "blurred vision", spanish: "visión borrosa", page: 8, type: "noun" },
+        { english: "maimed", spanish: "mocho", page: 8, type: "noun" },
+        { english: "hunch", spanish: "joroba", page: 8, type: "noun" },
+        { english: "hunchback", spanish: "jorobado", page: 8, type: "noun" },
+        { english: "paralyzed", spanish: "paralítico", page: 8, type: "noun" },
+        { english: "handicapped", spanish: "discapacitado (término tradicional)", page: 8, type: "noun" },
+        { english: "disabled", spanish: "discapacitado (general)", page: 8, type: "noun" },
+        { english: "cripple", spanish: "lisiado (despectivo)", page: 8, type: "noun" },
+        { english: "syringe", spanish: "jeringa", page: 8, type: "noun" },
+        { english: "injection", spanish: "inyección", page: 8, type: "noun" },
+        { english: "hospital", spanish: "hospital", page: 8, type: "noun" },
+        { english: "ward", spanish: "pabellón (hospital)", page: 8, type: "noun" },
+        { english: "emergency", spanish: "emergencia", page: 8, type: "noun" },
+        { english: "ambulance", spanish: "ambulancia", page: 8, type: "noun" },
+        { english: "doctor", spanish: "doctor", page: 8, type: "noun" },
+        { english: "nurse", spanish: "enfermera", page: 8, type: "noun" },
+        { english: "patient", spanish: "paciente", page: 8, type: "noun" },
+        { english: "white", spanish: "blanco", page: 8, type: "noun" },
+        { english: "black", spanish: "negro", page: 8, type: "noun" },
+        { english: "red", spanish: "rojo", page: 8, type: "noun" },
+        { english: "yellow", spanish: "amarillo", page: 8, type: "noun" },
+        { english: "orange", spanish: "naranja", page: 8, type: "noun" },
+        { english: "blond(e)", spanish: "rubio(a)", page: 8, type: "noun" },
+        { english: "blue", spanish: "azul", page: 8, type: "noun" },
+        { english: "green", spanish: "verde", page: 8, type: "noun" },
+        { english: "brown", spanish: "café (color)", page: 8, type: "noun" },
+        { english: "pink", spanish: "rosado", page: 8, type: "noun" },
+        { english: "violet", spanish: "violeta", page: 8, type: "noun" },
+        { english: "purple", spanish: "morado", page: 8, type: "noun" },
+        { english: "grey", spanish: "gris", page: 8, type: "noun" },
+        { english: "light", spanish: "claro (color)", page: 8, type: "noun" },
+        { english: "dark", spanish: "oscuro (color)", page: 8, type: "noun" },
+        { english: "mourning", spanish: "luto", page: 8, type: "noun" },
+
+        // PÁGINA 09 (TIEMPO, FECHAS Y FESTIVIDADES)
+        { english: "the days of the week", spanish: "los días de la semana", page: 9, type: "noun" },
+        { english: "monday", spanish: "lunes", page: 9, type: "noun" },
+        { english: "tuesday", spanish: "martes", page: 9, type: "noun" },
+        { english: "wednesday", spanish: "miércoles", page: 9, type: "noun" },
+        { english: "thursday", spanish: "jueves", page: 9, type: "noun" },
+        { english: "friday", spanish: "viernes", page: 9, type: "noun" },
+        { english: "saturday", spanish: "sábado", page: 9, type: "noun" },
+        { english: "sunday", spanish: "domingo", page: 9, type: "noun" },
+        { english: "the months of the year", spanish: "los meses del año", page: 9, type: "noun" },
+        { english: "january", spanish: "enero", page: 9, type: "noun" },
+        { english: "february", spanish: "febrero", page: 9, type: "noun" },
+        { english: "march", spanish: "marzo", page: 9, type: "noun" },
+        { english: "april", spanish: "abril", page: 9, type: "noun" },
+        { english: "may", spanish: "mayo", page: 9, type: "noun" },
+        { english: "june", spanish: "junio", page: 9, type: "noun" },
+        { english: "july", spanish: "julio", page: 9, type: "noun" },
+        { english: "august", spanish: "agosto", page: 9, type: "noun" },
+        { english: "september", spanish: "septiembre", page: 9, type: "noun" },
+        { english: "october", spanish: "octubre", page: 9, type: "noun" },
+        { english: "november", spanish: "noviembre", page: 9, type: "noun" },
+        { english: "december", spanish: "diciembre", page: 9, type: "noun" },
+        { english: "weekend", spanish: "fin de semana", page: 9, type: "noun" },
+        { english: "long weekend", spanish: "puente (fin de semana largo)", page: 9, type: "noun" },
+        { english: "fortnight", spanish: "quincena (dos semanas)", page: 9, type: "noun" },
+        { english: "century", spanish: "siglo", page: 9, type: "noun" },
+        { english: "leap year", spanish: "año bisiesto", page: 9, type: "noun" },
+        { english: "today", spanish: "hoy", page: 9, type: "noun" },
+        { english: "yesterday", spanish: "ayer", page: 9, type: "noun" },
+        { english: "the day before yesterday", spanish: "anteayer", page: 9, type: "noun" },
+        { english: "yesterday afternoon", spanish: "ayer por la tarde", page: 9, type: "noun" },
+        { english: "tomorrow", spanish: "mañana (día siguiente)", page: 9, type: "noun" },
+        { english: "tomorrow morning", spanish: "mañana por la mañana", page: 9, type: "noun" },
+        { english: "the day after tomorrow", spanish: "pasado mañana", page: 9, type: "noun" },
+        { english: "tonight", spanish: "esta noche", page: 9, type: "noun" },
+        { english: "last night", spanish: "anoche", page: 9, type: "noun" },
+        { english: "the night before last", spanish: "anteanoche", page: 9, type: "noun" },
+        { english: "sunset", spanish: "atardecer", page: 9, type: "noun" },
+        { english: "dawn", spanish: "alba", page: 9, type: "noun" },
+        { english: "holiday", spanish: "día festivo", page: 9, type: "noun" },
+        { english: "christmas", spanish: "Navidad", page: 9, type: "noun" },
+        { english: "christmas eve", spanish: "Nochebuena (víspera de Navidad)", page: 9, type: "noun" },
+        { english: "new year", spanish: "Año Nuevo", page: 9, type: "noun" },
+        { english: "holy week", spanish: "Semana Santa", page: 9, type: "noun" },
+        { english: "easter", spanish: "Pascua", page: 9, type: "noun" },
+        { english: "lent", spanish: "Cuaresma", page: 9, type: "noun" },
+        { english: "independence day", spanish: "Día de la Independencia", page: 9, type: "noun" },
+        { english: "valentine's day", spanish: "Día de San Valentín (amor y amistad)", page: 9, type: "noun" },
+        { english: "mother's day", spanish: "Día de la Madre", page: 9, type: "noun" },
+
+        // PÁGINA 10 (ESTACIONES Y CLIMA)
+        { english: "the four seasons", spanish: "las cuatro estaciones", page: 10, type: "noun" },
+        { english: "winter", spanish: "invierno", page: 10, type: "noun" },
+        { english: "spring", spanish: "primavera", page: 10, type: "noun" },
+        { english: "summer", spanish: "verano", page: 10, type: "noun" },
+        { english: "autumn", spanish: "otoño (británico)", page: 10, type: "noun" },
+        { english: "fall", spanish: "otoño (estadounidense)", page: 10, type: "noun" },
+        { english: "the weather", spanish: "el tiempo", page: 10, type: "noun" },
+        { english: "temperature", spanish: "temperatura", page: 10, type: "noun" },
+        { english: "degrees", spanish: "grados", page: 10, type: "noun" },
+        { english: "celsius", spanish: "grados centígrados", page: 10, type: "noun" },
+        { english: "fahrenheit", spanish: "grados Fahrenheit", page: 10, type: "noun" },
+        { english: "snow", spanish: "nieve", page: 10, type: "noun" },
+        { english: "flurries", spanish: "nevada ligera", page: 10, type: "noun" },
+        { english: "rain", spanish: "lluvia", page: 10, type: "noun" },
+        { english: "sleet", spanish: "aguanieve", page: 10, type: "noun" },
+        { english: "thunder", spanish: "trueno", page: 10, type: "noun" },
+        { english: "lightning", spanish: "relámpago", page: 10, type: "noun" },
+        { english: "rays", spanish: "rayos (del sol)", page: 10, type: "noun" },
+        { english: "clouds", spanish: "nubes", page: 10, type: "noun" },
+        { english: "fog", spanish: "neblina", page: 10, type: "noun" },
+        { english: "flowers", spanish: "flores", page: 10, type: "noun" },
+        { english: "sweat", spanish: "sudor", page: 10, type: "noun" },
+        { english: "sun", spanish: "sol", page: 10, type: "noun" },
+        { english: "beach", spanish: "playa", page: 10, type: "noun" },
+        { english: "wind", spanish: "viento", page: 10, type: "noun" },
+        { english: "clime", spanish: "clima (literario)", page: 10, type: "noun" },
+        { english: "the weather forecast", spanish: "el pronóstico del tiempo", page: 10, type: "noun" },
+        { english: "sky", spanish: "cielo", page: 10, type: "noun" },
+        { english: "rainy", spanish: "lluvioso", page: 10, type: "noun" },
+        { english: "cloudy", spanish: "nublado", page: 10, type: "noun" },
+        { english: "sunny", spanish: "soleado", page: 10, type: "noun" },
+        { english: "windy", spanish: "ventoso", page: 10, type: "noun" },
+        { english: "foggy", spanish: "neblinoso", page: 10, type: "noun" },
+        { english: "warm", spanish: "cálido", page: 10, type: "noun" },
+        { english: "warmth", spanish: "calidez", page: 10, type: "noun" },
+        { english: "heat", spanish: "calor (sustantivo)", page: 10, type: "noun" },
+        { english: "hot", spanish: "caliente", page: 10, type: "noun" },
+        { english: "cold", spanish: "frío", page: 10, type: "noun" },
+        { english: "cool", spanish: "fresco", page: 10, type: "noun" },
+        { english: "chill", spanish: "frío intenso", page: 10, type: "noun" },
+        { english: "chilly", spanish: "friolento", page: 10, type: "noun" },
+
+        // PÁGINA 11 (COMIDA Y BEBIDAS)
+        { english: "breakfast", spanish: "desayuno", page: 11, type: "noun" },
+        { english: "lunch", spanish: "almuerzo", page: 11, type: "noun" },
+        { english: "dinner", spanish: "cena (principal)", page: 11, type: "noun" },
+        { english: "supper", spanish: "cena (ligera)", page: 11, type: "noun" },
+        { english: "eggs", spanish: "huevos", page: 11, type: "noun" },
+        { english: "bread", spanish: "pan", page: 11, type: "noun" },
+        { english: "toast", spanish: "tostada", page: 11, type: "noun" },
+        { english: "cereal", spanish: "cereal", page: 11, type: "noun" },
+        { english: "butter", spanish: "mantequilla", page: 11, type: "noun" },
+        { english: "salt", spanish: "sal", page: 11, type: "noun" },
+        { english: "sugar", spanish: "azúcar", page: 11, type: "noun" },
+        { english: "bacon", spanish: "tocino", page: 11, type: "noun" },
+        { english: "orange juice", spanish: "jugo de naranja", page: 11, type: "noun" },
+        { english: "milk shake", spanish: "malteada", page: 11, type: "noun" },
+        { english: "fast food", spanish: "comida rápida", page: 11, type: "noun" },
+        { english: "hamburger", spanish: "hamburguesa", page: 11, type: "noun" },
+        { english: "cheese", spanish: "queso", page: 11, type: "noun" },
+        { english: "sandwich", spanish: "sánduche", page: 11, type: "noun" },
+        { english: "potato chips", spanish: "papitas (de paquete)", page: 11, type: "noun" },
+        { english: "french fries", spanish: "papas a la francesa", page: 11, type: "noun" },
+        { english: "ketchup", spanish: "salsa de tomate", page: 11, type: "noun" },
+        { english: "soda", spanish: "gaseosa", page: 11, type: "noun" },
+        { english: "coke", spanish: "Coca-Cola", page: 11, type: "noun" },
+        { english: "soup", spanish: "sopa", page: 11, type: "noun" },
+        { english: "main dish", spanish: "plato principal", page: 11, type: "noun" },
+        { english: "rice", spanish: "arroz", page: 11, type: "noun" },
+        { english: "beans", spanish: "frijoles", page: 11, type: "noun" },
+        { english: "avocado", spanish: "aguacate", page: 11, type: "noun" },
+        { english: "salad", spanish: "ensalada", page: 11, type: "noun" },
+        { english: "vegetables", spanish: "vegetales", page: 11, type: "noun" },
+        { english: "lettuce", spanish: "lechuga", page: 11, type: "noun" },
+        { english: "onion", spanish: "cebolla", page: 11, type: "noun" },
+        { english: "tomato", spanish: "tomate", page: 11, type: "noun" },
+        { english: "cucumber", spanish: "pepino", page: 11, type: "noun" },
+        { english: "cabbage", spanish: "repollo", page: 11, type: "noun" },
+        { english: "meat", spanish: "carne", page: 11, type: "noun" },
+        { english: "beef", spanish: "carne de res", page: 11, type: "noun" },
+        { english: "pork", spanish: "carne de cerdo", page: 11, type: "noun" },
+        { english: "chicken", spanish: "pollo", page: 11, type: "noun" },
+        { english: "turkey", spanish: "pavo", page: 11, type: "noun" },
+        { english: "chop", spanish: "chuleta", page: 11, type: "noun" },
+        { english: "roast beef", spanish: "carne asada (roast beef)", page: 11, type: "noun" },
+        { english: "meat balls", spanish: "albóndigas", page: 11, type: "noun" },
+        { english: "seafood", spanish: "mariscos (general)", page: 11, type: "noun" },
+        { english: "fish", spanish: "pescado", page: 11, type: "noun" },
+        { english: "shrimps", spanish: "camarones", page: 11, type: "noun" },
+        { english: "oysters", spanish: "ostras", page: 11, type: "noun" },
+        { english: "lobster", spanish: "langosta", page: 11, type: "noun" },
+        { english: "shellfish", spanish: "mariscos (con concha)", page: 11, type: "noun" },
+        { english: "fruits", spanish: "frutas", page: 11, type: "noun" },
+        { english: "apple", spanish: "manzana", page: 11, type: "noun" },
+        { english: "pear", spanish: "pera", page: 11, type: "noun" },
+        { english: "orange", spanish: "naranja (fruta)", page: 11, type: "noun" },
+        { english: "tangerine", spanish: "mandarina", page: 11, type: "noun" },
+        { english: "banana", spanish: "banano", page: 11, type: "noun" },
+        { english: "strawberry", spanish: "fresa", page: 11, type: "noun" },
+        { english: "plum", spanish: "ciruela", page: 11, type: "noun" },
+        { english: "watermelon", spanish: "sandía", page: 11, type: "noun" },
+        { english: "grapes", spanish: "uvas", page: 11, type: "noun" },
+        { english: "dessert", spanish: "postre", page: 11, type: "noun" },
+        { english: "cake", spanish: "torta", page: 11, type: "noun" },
+        { english: "apple pie", spanish: "pastel de manzana", page: 11, type: "noun" },
+        { english: "ice cream", spanish: "helado", page: 11, type: "noun" },
+        { english: "pudding", spanish: "pudín", page: 11, type: "noun" },
+        { english: "tea", spanish: "té", page: 11, type: "noun" },
+
+        // PÁGINA 14 (ROPA)
+        { english: "suit", spanish: "traje", page: 14, type: "noun" },
+        { english: "tuxedo", spanish: "esmoquin", page: 14, type: "noun" },
+        { english: "dress", spanish: "vestido (de mujer)", page: 14, type: "noun" },
+        { english: "gown", spanish: "vestido largo", page: 14, type: "noun" },
+        { english: "blouse", spanish: "blusa", page: 14, type: "noun" },
+        { english: "shirt", spanish: "camisa", page: 14, type: "noun" },
+        { english: "t-shirt", spanish: "camiseta", page: 14, type: "noun" },
+        { english: "undershirt", spanish: "camisilla", page: 14, type: "noun" },
+        { english: "shawl", spanish: "chal", page: 14, type: "noun" },
+        { english: "coat", spanish: "abrigo", page: 14, type: "noun" },
+        { english: "jacket", spanish: "chaqueta", page: 14, type: "noun" },
+        { english: "trousers", spanish: "pantalones (británico)", page: 14, type: "noun" },
+        { english: "slacks", spanish: "pantalones (de vestir)", page: 14, type: "noun" },
+        { english: "pants", spanish: "pantalones (general)", page: 14, type: "noun" },
+        { english: "jeans", spanish: "jeans", page: 14, type: "noun" },
+        { english: "shorts", spanish: "shorts", page: 14, type: "noun" },
+        { english: "underpants", spanish: "calzoncillos", page: 14, type: "noun" },
+        { english: "undershorts", spanish: "calzoncillos (tipo bóxer)", page: 14, type: "noun" },
+        { english: "underwear", spanish: "ropa interior", page: 14, type: "noun" },
+        { english: "panties", spanish: "calzones (de mujer)", page: 14, type: "noun" },
+        { english: "panty-hose", spanish: "media pantalón", page: 14, type: "noun" },
+        { english: "bra", spanish: "brasier", page: 14, type: "noun" },
+        { english: "diaper", spanish: "pañal", page: 14, type: "noun" },
+        { english: "skirt", spanish: "falda", page: 14, type: "noun" },
+        { english: "underskirt", spanish: "enaguas", page: 14, type: "noun" },
+        { english: "trunks", spanish: "pantaloneta", page: 14, type: "noun" },
+        { english: "boots", spanish: "botas", page: 14, type: "noun" },
+        { english: "shoes", spanish: "zapatos", page: 14, type: "noun" },
+        { english: "sneakers", spanish: "tenis", page: 14, type: "noun" },
+        { english: "slippers", spanish: "chanclas", page: 14, type: "noun" },
+        { english: "laces", spanish: "cordones", page: 14, type: "noun" },
+        { english: "socks", spanish: "medias (cortas)", page: 14, type: "noun" },
+        { english: "stockings", spanish: "medias (largas)", page: 14, type: "noun" },
+        { english: "necktie", spanish: "corbata", page: 14, type: "noun" },
+        { english: "belt", spanish: "correa", page: 14, type: "noun" },
+        { english: "waistband", spanish: "cinturón (de la prenda)", page: 14, type: "noun" },
+        { english: "gloves", spanish: "guantes", page: 14, type: "noun" },
+        { english: "mittens", spanish: "guantes (sin dedos separados)", page: 14, type: "noun" },
+        { english: "handkerchief", spanish: "pañuelo", page: 14, type: "noun" },
+        { english: "sweater", spanish: "suéter", page: 14, type: "noun" },
+        { english: "sweat-suit", spanish: "sudadera", page: 14, type: "noun" },
+        { english: "swim-suit", spanish: "traje de baño", page: 14, type: "noun" },
+        { english: "hat", spanish: "sombrero", page: 14, type: "noun" },
+        { english: "cap", spanish: "gorra", page: 14, type: "noun" },
+        { english: "scarf", spanish: "bufanda", page: 14, type: "noun" },
+        { english: "wardrobe", spanish: "ropero", page: 14, type: "noun" },
+
+        // PÁGINA 17 (VERBOS/SUSTANTIVOS DE MESA)
+        { english: "chinaware", spanish: "vajilla", page: 17, type: "noun" },
+        { english: "plate", spanish: "plato (plano)", page: 17, type: "noun" },
+        { english: "dish", spanish: "plato (recipiente)", page: 17, type: "noun" },
+        { english: "course", spanish: "plato (comida servida)", page: 17, type: "noun" },
+        { english: "cup", spanish: "taza", page: 17, type: "noun" },
+        { english: "bowl", spanish: "tazón", page: 17, type: "noun" },
+        { english: "glass", spanish: "vaso (de vidrio)", page: 17, type: "noun" },
+        { english: "mug", spanish: "vaso (grande)", page: 17, type: "noun" },
+        { english: "saucer", spanish: "platillo", page: 17, type: "noun" },
+        { english: "tray", spanish: "bandeja", page: 17, type: "noun" },
+        { english: "silverware", spanish: "cubiertos", page: 17, type: "noun" },
+        { english: "knife", spanish: "cuchillo", page: 17, type: "noun" },
+        { english: "fork", spanish: "tenedor", page: 17, type: "noun" },
+        { english: "spoon", spanish: "cuchara", page: 17, type: "noun" },
+        { english: "teaspoon", spanish: "cucharita", page: 17, type: "noun" },
+        { english: "spoonful", spanish: "cucharada", page: 17, type: "noun" },
+        { english: "teaspoonful", spanish: "cucharadita", page: 17, type: "noun" },
+        { english: "napkin", spanish: "servilleta", page: 17, type: "noun" },
+        { english: "ashtray", spanish: "cenicero", page: 17, type: "noun" },
+        { english: "pitcher", spanish: "jarra", page: 17, type: "noun" },
+        { english: "menu", spanish: "menú", page: 17, type: "noun" },
+        { english: "table", spanish: "mesa", page: 17, type: "noun" },
+        { english: "tablecloth", spanish: "mantel", page: 17, type: "noun" },
+        { english: "plate mat", spanish: "individual", page: 17, type: "noun" },
+        { english: "toothpick", spanish: "palillo", page: 17, type: "noun" },
+        { english: "corkscrew", spanish: "sacacorchos", page: 17, type: "noun" },
+        { english: "chopsticks", spanish: "palos chinos", page: 17, type: "noun" },
+        { english: "straw", spanish: "pitillo", page: 17, type: "noun" },
+        { english: "spices", spanish: "especias", page: 17, type: "noun" },
+        { english: "spicy", spanish: "picante", page: 17, type: "noun" },
+        { english: "sauce", spanish: "salsa (general)", page: 17, type: "noun" },
+        { english: "dressing", spanish: "salsa (ensalada)", page: 17, type: "noun" },
+        { english: "gravy", spanish: "salsa (de carne)", page: 17, type: "noun" },
+        { english: "chili", spanish: "ají", page: 17, type: "noun" },
+        { english: "pepper", spanish: "pimienta", page: 17, type: "noun" },
+        { english: "salt shaker", spanish: "salero", page: 17, type: "noun" },
+
+        // PÁGINA 18 (VERBOS)
+        { english: "to study", spanish: "estudiar", page: 18, type: "noun" },
+        { english: "to learn", spanish: "aprender", page: 18, type: "noun" },
+        { english: "to ask", spanish: "preguntar", page: 18, type: "noun" },
+        { english: "to answer", spanish: "responder", page: 18, type: "noun" },
+        { english: "to doubt", spanish: "dudar", page: 18, type: "noun" },
+        { english: "to like", spanish: "gustar", page: 18, type: "noun" },
+        { english: "to dislike", spanish: "no gustar", page: 18, type: "noun" },
+        { english: "to want", spanish: "querer", page: 18, type: "noun" },
+        { english: "to love", spanish: "amar", page: 18, type: "noun" },
+        { english: "to hate", spanish: "odiar", page: 18, type: "noun" },
+        { english: "to wish", spanish: "desear", page: 18, type: "noun" },
+        { english: "to remember", spanish: "recordar (de memoria)", page: 18, type: "noun" },
+        { english: "to recall", spanish: "recordar (traer a la mente)", page: 18, type: "noun" },
+        { english: "to remind", spanish: "recordar (a alguien)", page: 18, type: "noun" },
+        { english: "to live", spanish: "vivir", page: 18, type: "noun" },
+        { english: "to die", spanish: "morir", page: 18, type: "noun" },
+        { english: "to close", spanish: "cerrar", page: 18, type: "noun" },
+        { english: "to open", spanish: "abrir", page: 18, type: "noun" },
+        { english: "to look", spanish: "mirar (dirigir la vista)", page: 18, type: "noun" },
+        { english: "to watch", spanish: "mirar (observar)", page: 18, type: "noun" },
+        { english: "to walk", spanish: "caminar", page: 18, type: "noun" },
+        { english: "to follow", spanish: "seguir", page: 18, type: "noun" },
+        { english: "to clean", spanish: "limpiar", page: 18, type: "noun" },
+        { english: "to clear", spanish: "aclarar", page: 18, type: "noun" },
+        { english: "to dirty", spanish: "ensuciar", page: 18, type: "noun" },
+        { english: "to wash", spanish: "lavar", page: 18, type: "noun" },
+        { english: "to dry", spanish: "secar", page: 18, type: "noun" },
+        { english: "to wet", spanish: "mojar", page: 18, type: "noun" },
+        { english: "to call", spanish: "llamar", page: 18, type: "noun" },
+        { english: "to listen to", spanish: "escuchar", page: 18, type: "noun" },
+        { english: "to start", spanish: "arrancar", page: 18, type: "noun" },
+        { english: "to finish", spanish: "terminar (finalizar)", page: 18, type: "noun" },
+        { english: "to end", spanish: "terminar (acabar)", page: 18, type: "noun" },
+        { english: "to use", spanish: "usar", page: 18, type: "noun" },
+        { english: "to cook", spanish: "cocinar", page: 18, type: "noun" },
+        { english: "to boil", spanish: "hervir", page: 18, type: "noun" },
+        { english: "to work", spanish: "trabajar", page: 18, type: "noun" },
+        { english: "to help", spanish: "ayudar", page: 18, type: "noun" },
+        { english: "to play", spanish: "jugar", page: 18, type: "noun" },
+        { english: "to dance", spanish: "bailar", page: 18, type: "noun" },
+        { english: "to rent", spanish: "arrendar", page: 18, type: "noun" },
+        { english: "to belong", spanish: "pertenecer", page: 18, type: "noun" },
+
+        // PÁGINA 19 (VERBOS)  
+        { english: "to share", spanish: "compartir", page: 19, type: "noun" },
+        { english: "to smile", spanish: "sonreír", page: 19, type: "noun" },
+        { english: "to laugh", spanish: "reír", page: 19, type: "noun" },
+        { english: "to frown", spanish: "fruncir el ceño", page: 19, type: "noun" },
+        { english: "to whistle", spanish: "silbar", page: 19, type: "noun" },
+        { english: "to whisper", spanish: "susurrar", page: 19, type: "noun" },
+        { english: "to cry", spanish: "llorar", page: 19, type: "noun" },
+        { english: "to travel", spanish: "viajar", page: 19, type: "noun" },
+        { english: "to try", spanish: "intentar", page: 19, type: "noun" },
+        { english: "to dial", spanish: "marcar (teléfono)", page: 19, type: "noun" },
+        { english: "to mark", spanish: "marcar (hacer una marca)", page: 19, type: "noun" },
+        { english: "to count", spanish: "contar", page: 19, type: "noun" },
+        { english: "to show", spanish: "mostrar", page: 19, type: "noun" },
+        { english: "to kiss", spanish: "besar", page: 19, type: "noun" },
+        { english: "to touch", spanish: "tocar", page: 19, type: "noun" },
+        { english: "to lick", spanish: "lamer", page: 19, type: "noun" },
+        { english: "to rain", spanish: "llover", page: 19, type: "noun" },
+        { english: "to rest", spanish: "descansar", page: 19, type: "noun" },
+        { english: "to breathe", spanish: "respirar", page: 19, type: "noun" },
+        { english: "to receive", spanish: "recibir", page: 19, type: "noun" },
+        { english: "to change", spanish: "cambiar", page: 19, type: "noun" },
+        { english: "to fix", spanish: "arreglar", page: 19, type: "noun" },
+        { english: "to save", spanish: "ahorrar", page: 19, type: "noun" },
+        { english: "to lie", spanish: "mentir", page: 19, type: "noun" },
+        { english: "to explain", spanish: "explicar", page: 19, type: "noun" },
+        { english: "to need", spanish: "necesitar", page: 19, type: "noun" },
+        { english: "to trade", spanish: "negociar", page: 19, type: "noun" },
+        { english: "to sign", spanish: "firmar", page: 19, type: "noun" },
+        { english: "to type", spanish: "digitar", page: 19, type: "noun" },
+        { english: "to enter", spanish: "entrar", page: 19, type: "noun" },
+        { english: "to stay", spanish: "quedarse", page: 19, type: "noun" },
+        { english: "to remain", spanish: "permanecer", page: 19, type: "noun" },
+        { english: "to believe", spanish: "creer", page: 19, type: "noun" },
+        { english: "to invite", spanish: "invitar", page: 19, type: "noun" },
+        { english: "to paint", spanish: "pintar", page: 19, type: "noun" },
+        { english: "to brush", spanish: "cepillarse", page: 19, type: "noun" },
+        { english: "to rate", spanish: "valorar", page: 19, type: "noun" },
+
+        // PÁGINA 20 (VERBOS/ADJETIVOS)
+        { english: "big", spanish: "grande (tamaño)", page: 20, type: "noun" },
+        { english: "large", spanish: "grande (espacioso)", page: 20, type: "noun" },
+        { english: "huge", spanish: "enorme", page: 20, type: "noun" },
+        { english: "great", spanish: "gran / grande", page: 20, type: "noun" },
+        { english: "small", spanish: "pequeño", page: 20, type: "noun" },
+        { english: "tiny", spanish: "diminuto", page: 20, type: "noun" },
+        { english: "little", spanish: "pequeño / poco", page: 20, type: "noun" },
+        { english: "tall", spanish: "alto (estatura)", page: 20, type: "noun" },
+        { english: "high", spanish: "alto (altura)", page: 20, type: "noun" },
+        { english: "short", spanish: "bajo (estatura)", page: 20, type: "noun" },
+        { english: "low", spanish: "bajo (nivel)", page: 20, type: "noun" },
+        { english: "pretty", spanish: "bonito", page: 20, type: "noun" },
+        { english: "beautiful", spanish: "hermoso", page: 20, type: "noun" },
+        { english: "beauty", spanish: "belleza", page: 20, type: "noun" },
+        { english: "ugly", spanish: "feo", page: 20, type: "noun" },
+        { english: "hard", spanish: "duro", page: 20, type: "noun" },
+        { english: "difficult", spanish: "difícil", page: 20, type: "noun" },
+        { english: "soft", spanish: "blando", page: 20, type: "noun" },
+        { english: "easy", spanish: "fácil", page: 20, type: "noun" },
+        { english: "dark", spanish: "oscuro", page: 20, type: "noun" },
+        { english: "clear", spanish: "claro", page: 20, type: "noun" },
+        { english: "light", spanish: "liviano", page: 20, type: "noun" },
+        { english: "heavy", spanish: "pesado", page: 20, type: "noun" },
+        { english: "rough", spanish: "tosco", page: 20, type: "noun" },
+        { english: "smooth", spanish: "suave", page: 20, type: "noun" },
+        { english: "young", spanish: "joven", page: 20, type: "noun" },
+        { english: "old", spanish: "viejo", page: 20, type: "noun" },
+        { english: "smart", spanish: "inteligente", page: 20, type: "noun" },
+        { english: "fool", spanish: "tonto", page: 20, type: "noun" },
+        { english: "true", spanish: "cierto", page: 20, type: "noun" },
+        { english: "false", spanish: "falso", page: 20, type: "noun" },
+        { english: "fast", spanish: "rápido (veloz)", page: 20, type: "noun" },
+        { english: "quick", spanish: "rápido (en poco tiempo)", page: 20, type: "noun" },
+        { english: "rapid", spanish: "rápido (acelerado)", page: 20, type: "noun" },
+        { english: "swift", spanish: "rápido (muy veloz)", page: 20, type: "noun" },
+        { english: "slow", spanish: "lento", page: 20, type: "noun" },
+        { english: "lazy", spanish: "perezoso", page: 20, type: "noun" },
+        { english: "active", spanish: "activo", page: 20, type: "noun" },
+        { english: "dynamic", spanish: "dinámico", page: 20, type: "noun" },
+        { english: "sincere", spanish: "sincero", page: 20, type: "noun" },
+        { english: "liar", spanish: "mentiroso", page: 20, type: "noun" },
+        { english: "loyal", spanish: "fiel (leal)", page: 20, type: "noun" },
+        { english: "faithful", spanish: "fiel (constante)", page: 20, type: "noun" },
+        { english: "unfaithful", spanish: "infiel", page: 20, type: "noun" },
+        { english: "love", spanish: "amor", page: 20, type: "noun" },
+        { english: "hate", spanish: "odio", page: 20, type: "noun" },
+        { english: "careful", spanish: "cuidadoso", page: 20, type: "noun" },
+        { english: "careless", spanish: "descuidado", page: 20, type: "noun" },
+        { english: "clean", spanish: "limpio", page: 20, type: "noun" },
+        { english: "dirty", spanish: "sucio", page: 20, type: "noun" },
+        { english: "busy", spanish: "ocupado", page: 20, type: "noun" },
+        { english: "free", spanish: "libre", page: 20, type: "noun" },
+        { english: "vacant", spanish: "vacante", page: 20, type: "noun" },
+        { english: "empty", spanish: "vacío", page: 20, type: "noun" },
+        { english: "full", spanish: "lleno", page: 20, type: "noun" },
+        { english: "fat", spanish: "gordo", page: 20, type: "noun" },
+        { english: "thick", spanish: "grueso", page: 20, type: "noun" },
+        { english: "thin", spanish: "flaco", page: 20, type: "noun" },
+        { english: "happy", spanish: "feliz", page: 20, type: "noun" },
+        { english: "unhappy", spanish: "infeliz", page: 20, type: "noun" },
+        { english: "sad", spanish: "triste", page: 20, type: "noun" },
+        { english: "glad", spanish: "alegre", page: 20, type: "noun" },
+
+        // PÁGINA 21 (VERBOS)
+        { base: "be", past: "was - were", pastParticiple: "been", spanish: "ser / estar", page: 21, type: "verb" },
+        { base: "have", past: "had", pastParticiple: "had", spanish: "tener / haber", page: 21, type: "verb" },
+        { base: "do", past: "did", pastParticiple: "done", spanish: "hacer / ejecutar", page: 21, type: "verb" },
+        { base: "make", past: "made", pastParticiple: "made", spanish: "hacer / fabricar", page: 21, type: "verb" },
+        { base: "take", past: "took", pastParticiple: "taken", spanish: "tomar / llevar", page: 21, type: "verb" },
+        { base: "eat", past: "ate", pastParticiple: "eaten", spanish: "comer", page: 21, type: "verb" },
+        { base: "drink", past: "drank", pastParticiple: "drunk", spanish: "beber", page: 21, type: "verb" },
+        { base: "smell", past: "smelt", pastParticiple: "smelt", spanish: "oler", page: 21, type: "verb" },
+        { base: "spend", past: "spent", pastParticiple: "spent", spanish: "gastar / pasar", page: 21, type: "verb" },
+        { base: "buy", past: "bought", pastParticiple: "bought", spanish: "comprar", page: 21, type: "verb" },
+        { base: "sell", past: "sold", pastParticiple: "sold", spanish: "vender", page: 21, type: "verb" },
+        { base: "pay", past: "paid", pastParticiple: "paid", spanish: "pagar", page: 21, type: "verb" },
+        { base: "cost", past: "cost", pastParticiple: "cost", spanish: "costar", page: 21, type: "verb" },
+        { base: "get", past: "got", pastParticiple: "gotten", spanish: "conseguir", page: 21, type: "verb" },
+        { base: "give", past: "gave", pastParticiple: "given", spanish: "dar", page: 21, type: "verb" },
+        { base: "bring", past: "brought", pastParticiple: "brought", spanish: "traer", page: 21, type: "verb" },
+        { base: "send", past: "sent", pastParticiple: "sent", spanish: "enviar", page: 21, type: "verb" },
+        { base: "come", past: "came", pastParticiple: "come", spanish: "venir / llegar", page: 21, type: "verb" },
+        { base: "go", past: "went", pastParticiple: "gone", spanish: "ir", page: 21, type: "verb" },
+        { base: "sit", past: "sat", pastParticiple: "sat", spanish: "sentarse", page: 21, type: "verb" },
+        { base: "stand up", past: "stood up", pastParticiple: "stood up", spanish: "pararse", page: 21, type: "verb" },
+        { base: "see", past: "saw", pastParticiple: "seen", spanish: "ver", page: 21, type: "verb" },
+        { base: "choose", past: "chose", pastParticiple: "chosen", spanish: "escoger", page: 21, type: "verb" },
+        { base: "begin", past: "began", pastParticiple: "begun", spanish: "empezar", page: 21, type: "verb" },
+        { base: "lend", past: "lent", pastParticiple: "lent", spanish: "prestar", page: 21, type: "verb" },
+        { base: "wear", past: "wore", pastParticiple: "worn", spanish: "usar / ponerse", page: 21, type: "verb" },
+        { base: "speak", past: "spoke", pastParticiple: "spoken", spanish: "hablar", page: 21, type: "verb" },
+        { base: "say", past: "said", pastParticiple: "said", spanish: "decir", page: 21, type: "verb" },
+        { base: "tell", past: "told", pastParticiple: "told", spanish: "decir / contar", page: 21, type: "verb" },
+        { base: "understand", past: "understood", pastParticiple: "understood", spanish: "entender", page: 21, type: "verb" },
+        
+        // PÁGINA 22 (VERBOS)
+        { base: "win", past: "won", pastParticiple: "won", spanish: "ganar", page: 22, type: "verb" },
+        { base: "lose", past: "lost", pastParticiple: "lost", spanish: "perder", page: 22, type: "verb" },
+        { base: "quit", past: "quit", pastParticiple: "quit", spanish: "renunciar / dejar de", page: 22, type: "verb" },
+        { base: "break", past: "broke", pastParticiple: "broken", spanish: "quebrar", page: 22, type: "verb" },
+        { base: "keep", past: "kept", pastParticiple: "kept", spanish: "guardar / mantener", page: 22, type: "verb" },
+        { base: "sleep", past: "slept", pastParticiple: "slept", spanish: "dormir", page: 22, type: "verb" },
+        { base: "dream", past: "dreamt", pastParticiple: "dreamt", spanish: "soñar", page: 22, type: "verb" },
+        { base: "wake up", past: "woke up", pastParticiple: "woken up", spanish: "despertar", page: 22, type: "verb" },
+        { base: "mean", past: "meant", pastParticiple: "meant", spanish: "significar", page: 22, type: "verb" },
+        { base: "steal", past: "stole", pastParticiple: "stolen", spanish: "robar", page: 22, type: "verb" },
+        { base: "sing", past: "sang", pastParticiple: "sung", spanish: "cantar", page: 22, type: "verb" },
+        { base: "run", past: "ran", pastParticiple: "run", spanish: "correr", page: 22, type: "verb" },
+        { base: "swim", past: "swam", pastParticiple: "swum", spanish: "nadar", page: 22, type: "verb" },
+        { base: "fly", past: "flew", pastParticiple: "flown", spanish: "volar", page: 22, type: "verb" },
+        { base: "drive", past: "drove", pastParticiple: "driven", spanish: "manejar", page: 22, type: "verb" },
+        { base: "fall", past: "fell", pastParticiple: "fallen", spanish: "caer", page: 22, type: "verb" },
+        { base: "catch", past: "caught", pastParticiple: "caught", spanish: "agarrar", page: 22, type: "verb" },
+        { base: "feel", past: "felt", pastParticiple: "felt", spanish: "sentir", page: 22, type: "verb" },
+        { base: "hear", past: "heard", pastParticiple: "heard", spanish: "oír", page: 22, type: "verb" },
+        { base: "grow up", past: "grew up", pastParticiple: "grown up", spanish: "crecer", page: 22, type: "verb" },
+        { base: "forgive", past: "forgave", pastParticiple: "forgiven", spanish: "perdonar", page: 22, type: "verb" },
+        { base: "forget", past: "forgot", pastParticiple: "forgotten", spanish: "olvidar", page: 22, type: "verb" },
+        { base: "think", past: "thought", pastParticiple: "thought", spanish: "pensar / creer", page: 22, type: "verb" },
+        { base: "read", past: "read", pastParticiple: "read", spanish: "leer", page: 22, type: "verb" },
+        { base: "write", past: "wrote", pastParticiple: "written", spanish: "escribir", page: 22, type: "verb" },
+        { base: "know", past: "knew", pastParticiple: "known", spanish: "saber / conocer", page: 22, type: "verb" },
+        { base: "meet", past: "met", pastParticiple: "met", spanish: "encontrar / conocer", page: 22, type: "verb" },
+        { base: "find", past: "found", pastParticiple: "found", spanish: "encontrar / hallar", page: 22, type: "verb" },
+        { base: "let", past: "let", pastParticiple: "let", spanish: "permitir / dejar", page: 22, type: "verb" },
+        { base: "leave", past: "left", pastParticiple: "left", spanish: "dejar / partir", page: 22, type: "verb" },
+
+        // PÁGINA 24 (CASA Y HOGAR)
+        { english: "building", spanish: "edificio", page: 24, type: "noun" },
+        { english: "condominium", spanish: "condominio", page: 24, type: "noun" },
+        { english: "apartment", spanish: "apartamento", page: 24, type: "noun" },
+        { english: "studio", spanish: "estudio", page: 24, type: "noun" },
+        { english: "floor plan", spanish: "plano", page: 24, type: "noun" },
+        { english: "elevator", spanish: "ascensor", page: 24, type: "noun" },
+        { english: "garage", spanish: "garaje", page: 24, type: "noun" },
+        { english: "lobby", spanish: "vestíbulo", page: 24, type: "noun" },
+        { english: "room", spanish: "cuarto", page: 24, type: "noun" },
+        { english: "living room", spanish: "sala", page: 24, type: "noun" },
+        { english: "dining room", spanish: "comedor", page: 24, type: "noun" },
+        { english: "bedroom", spanish: "alcoba", page: 24, type: "noun" },
+        { english: "bathroom", spanish: "baño", page: 24, type: "noun" },
+        { english: "kitchen", spanish: "cocina", page: 24, type: "noun" },
+        { english: "library", spanish: "biblioteca", page: 24, type: "noun" },
+        { english: "balcony", spanish: "balcón", page: 24, type: "noun" },
+        { english: "basement", spanish: "sótano", page: 24, type: "noun" },
+        { english: "porch", spanish: "pórtico", page: 24, type: "noun" },
+        { english: "swimming pool", spanish: "piscina", page: 24, type: "noun" },
+        { english: "yard", spanish: "patio", page: 24, type: "noun" },
+        { english: "door", spanish: "puerta", page: 24, type: "noun" },
+        { english: "door plate", spanish: "placa", page: 24, type: "noun" },
+        { english: "doorbell", spanish: "timbre", page: 24, type: "noun" },
+        { english: "alarm", spanish: "alarma", page: 24, type: "noun" },
+        { english: "window", spanish: "ventana", page: 24, type: "noun" },
+        { english: "wall", spanish: "pared", page: 24, type: "noun" },
+        { english: "floor", spanish: "piso", page: 24, type: "noun" },
+        { english: "ceiling", spanish: "techo (interior)", page: 24, type: "noun" },
+        { english: "roof", spanish: "techo (exterior)", page: 24, type: "noun" },
+        { english: "fireplace", spanish: "chimenea (hogar)", page: 24, type: "noun" },
+        { english: "chimney", spanish: "chimenea (conducto)", page: 24, type: "noun" },
+        { english: "steps", spanish: "escalas", page: 24, type: "noun" },
+        { english: "stairs", spanish: "escalas", page: 24, type: "noun" },
+        { english: "upstairs", spanish: "arriba", page: 24, type: "noun" },
+        { english: "downstairs", spanish: "abajo", page: 24, type: "noun" },
+        { english: "tile", spanish: "baldosa", page: 24, type: "noun" },
+        { english: "paint", spanish: "pintura", page: 24, type: "noun" },
+        { english: "painting", spanish: "pintura", page: 24, type: "noun" },
+        { english: "garden", spanish: "jardín", page: 24, type: "noun" },
+        { english: "lawn", spanish: "prado", page: 24, type: "noun" },
+        { english: "fence", spanish: "cerca", page: 24, type: "noun" },
+        { english: "address", spanish: "dirección", page: 24, type: "noun" },
+        { english: "home address", spanish: "dirección residencial", page: 24, type: "noun" },
+        { english: "business address", spanish: "dirección comercial", page: 24, type: "noun" },
+        { english: "homeless", spanish: "sin casa", page: 24, type: "noun" },
+
+        // PÁGINA 25 (LA SALA Y LA COCINA)
+        { english: "furniture", spanish: "muebles", page: 25, type: "noun" },
+        { english: "sofa", spanish: "sofá", page: 25, type: "noun" },
+        { english: "love seat", spanish: "canapé", page: 25, type: "noun" },
+        { english: "chair", spanish: "silla", page: 25, type: "noun" },
+        { english: "center table", spanish: "mesa de centro", page: 25, type: "noun" },
+        { english: "side table", spanish: "mesa lateral", page: 25, type: "noun" },
+        { english: "television", spanish: "televisión", page: 25, type: "noun" },
+        { english: "t.v. set", spanish: "televisor", page: 25, type: "noun" },
+        { english: "screen", spanish: "pantalla", page: 25, type: "noun" },
+        { english: "antenna", spanish: "antena", page: 25, type: "noun" },
+        { english: "channel", spanish: "canal", page: 25, type: "noun" },
+        { english: "shows", spanish: "programas", page: 25, type: "noun" },
+        { english: "remote control", spanish: "control remoto", page: 25, type: "noun" },
+        { english: "stereo", spanish: "equipo sonido", page: 25, type: "noun" },
+        { english: "radio", spanish: "radio", page: 25, type: "noun" },
+        { english: "stations", spanish: "emisoras", page: 25, type: "noun" },
+        { english: "short wave band", spanish: "banda de onda corta", page: 25, type: "noun" },
+        { english: "record player", spanish: "tocadiscos", page: 25, type: "noun" },
+        { english: "tape deck", spanish: "casetero", page: 25, type: "noun" },
+        { english: "tape recorder", spanish: "grabadora", page: 25, type: "noun" },
+        { english: "speakers", spanish: "parlantes", page: 25, type: "noun" },
+        { english: "picture", spanish: "cuadro", page: 25, type: "noun" },
+        { english: "frame", spanish: "marco", page: 25, type: "noun" },
+        { english: "lamp", spanish: "lámpara", page: 25, type: "noun" },
+        { english: "bulb", spanish: "bombillo", page: 25, type: "noun" },
+        { english: "wall unit", spanish: "multimueble", page: 25, type: "noun" },
+        { english: "telephone", spanish: "teléfono", page: 25, type: "noun" },
+        { english: "refrigerator", spanish: "nevera", page: 25, type: "noun" },
+        { english: "freezer", spanish: "congelador", page: 25, type: "noun" },
+        { english: "stove", spanish: "estufa", page: 25, type: "noun" },
+        { english: "grill", spanish: "parrilla", page: 25, type: "noun" },
+        { english: "oven", spanish: "horno", page: 25, type: "noun" },
+        { english: "sink", spanish: "fregadero", page: 25, type: "noun" },
+        { english: "dish washer", spanish: "lavaplatos", page: 25, type: "noun" },
+        { english: "pot", spanish: "pot", page: 25, type: "noun" },
+        { english: "pan", spanish: "sartén", page: 25, type: "noun" },
+        { english: "toaster", spanish: "tostadora", page: 25, type: "noun" },
+        { english: "blender", spanish: "licuadora", page: 25, type: "noun" },
+        { english: "washing machine", spanish: "lavadora", page: 25, type: "noun" },
+        { english: "drying machine", spanish: "secadora", page: 25, type: "noun" },
+        { english: "coffee maker", spanish: "cafetera", page: 25, type: "noun" },
+        { english: "can opener", spanish: "abrelatas", page: 25, type: "noun" },
+        { english: "juice maker", spanish: "juguera", page: 25, type: "noun" },
+        { english: "sandwich maker", spanish: "sanduchera", page: 25, type: "noun" },
+        { english: "microwave oven", spanish: "horno micro-ondas", page: 25, type: "noun" },
+
+        // PÁGINA 26 (LA ALCOBA Y EL BAÑO)
+        { english: "bed", spanish: "cama", page: 26, type: "noun" },
+        { english: "mattress", spanish: "colchón", page: 26, type: "noun" },
+        { english: "spring", spanish: "resorte", page: 26, type: "noun" },
+        { english: "board", spanish: "tabla", page: 26, type: "noun" },
+        { english: "frame", spanish: "marco", page: 26, type: "noun" },
+        { english: "sheets", spanish: "sábanas", page: 26, type: "noun" },
+        { english: "blanket", spanish: "cobija", page: 26, type: "noun" },
+        { english: "cover", spanish: "cubrecama", page: 26, type: "noun" },
+        { english: "pillow", spanish: "almohada", page: 26, type: "noun" },
+        { english: "pillow case", spanish: "funda almohada", page: 26, type: "noun" },
+        { english: "night table", spanish: "mesa de noche", page: 26, type: "noun" },
+        { english: "closet", spanish: "ropero", page: 26, type: "noun" },
+        { english: "wardrobe", spanish: "ropero", page: 26, type: "noun" },
+        { english: "shelf", spanish: "estante", page: 26, type: "noun" },
+        { english: "mirror", spanish: "espejo", page: 26, type: "noun" },
+        { english: "dresser", spanish: "tocador", page: 26, type: "noun" },
+        { english: "drawer", spanish: "cajón", page: 26, type: "noun" },
+        { english: "toilet", spanish: "inodoro", page: 26, type: "noun" },
+        { english: "toilet paper", spanish: "papel higiénico", page: 26, type: "noun" },
+        { english: "toiletries", spanish: "artículos tocador", page: 26, type: "noun" },
+        { english: "washbowl", spanish: "lavamanos", page: 26, type: "noun" },
+        { english: "faucet", spanish: "grifo", page: 26, type: "noun" },
+        { english: "tap", spanish: "grifo", page: 26, type: "noun" },
+        { english: "shower", spanish: "ducha", page: 26, type: "noun" },
+        { english: "bathtub", spanish: "bañera", page: 26, type: "noun" },
+        { english: "comb", spanish: "peine", page: 26, type: "noun" },
+        { english: "brush", spanish: "cepillo", page: 26, type: "noun" },
+        { english: "soap", spanish: "jabón", page: 26, type: "noun" },
+        { english: "soapdish", spanish: "jabonera", page: 26, type: "noun" },
+        { english: "shampoo", spanish: "champú", page: 26, type: "noun" },
+        { english: "conditioner", spanish: "acondicionador", page: 26, type: "noun" },
+        { english: "toothbrush", spanish: "cepillo dental", page: 26, type: "noun" },
+        { english: "toothpaste", spanish: "pasta dental", page: 26, type: "noun" },
+        { english: "dental floss", spanish: "seda dental", page: 26, type: "noun" },
+        { english: "hair dryer", spanish: "secador", page: 26, type: "noun" },
+        { english: "powder", spanish: "polvo", page: 26, type: "noun" },
+        { english: "lipstick", spanish: "labial", page: 26, type: "noun" },
+        { english: "makeup", spanish: "maquillaje", page: 26, type: "noun" },
+        { english: "razor", spanish: "máquina afeitar", page: 26, type: "noun" },
+        { english: "blade", spanish: "cuchilla", page: 26, type: "noun" },
+        { english: "lotion", spanish: "loción", page: 26, type: "noun" },
+        { english: "perfume", spanish: "perfume", page: 26, type: "noun" },
+        { english: "cologne", spanish: "colonia", page: 26, type: "noun" },
+        { english: "creams", spanish: "cremas", page: 26, type: "noun" },
+        { english: "broom", spanish: "escoba", page: 26, type: "noun" },
+        { english: "dustpan", spanish: "recogedor", page: 26, type: "noun" },
+        { english: "mop", spanish: "trapero", page: 26, type: "noun" },
+        { english: "detergent", spanish: "detergente", page: 26, type: "noun" },
+        { english: "waste basket", spanish: "cesta basura", page: 26, type: "noun" },
+        { english: "to flush", spanish: "vaciar", page: 26, type: "noun" },
+
+        // PÁGINA 27 (MAS VERBOS IRREGULARES)
+        { base: "teach", past: "taught", pastParticiple: "taught", spanish: "enseñar", page: 27, type: "verb" },
+        { base: "become", past: "became", pastParticiple: "become", spanish: "volverse", page: 27, type: "verb" },
+        { base: "bend", past: "bent", pastParticiple: "bent", spanish: "doblar", page: 27, type: "verb" },
+        { base: "cut", past: "cut", pastParticiple: "cut", spanish: "cortar", page: 27, type: "verb" },
+        { base: "burn", past: "burnt", pastParticiple: "burnt", spanish: "quemar", page: 27, type: "verb" },
+        { base: "put", past: "put", pastParticiple: "put", spanish: "poner", page: 27, type: "verb" },
+        { base: "ride", past: "rode", pastParticiple: "ridden", spanish: "montar / cabalgar", page: 27, type: "verb" },
+        { base: "shine", past: "shone", pastParticiple: "shone", spanish: "brillar", page: 27, type: "verb" },
+        { base: "feed", past: "fed", pastParticiple: "fed", spanish: "alimentar", page: 27, type: "verb" },
+        { base: "forbid", past: "forbade", pastParticiple: "forbidden", spanish: "prohibir", page: 27, type: "verb" },
+        { base: "fight", past: "fought", pastParticiple: "fought", spanish: "pelear", page: 27, type: "verb" },
+        { base: "bet", past: "bet", pastParticiple: "bet", spanish: "apostar", page: 27, type: "verb" },
+        { base: "shoot", past: "shot", pastParticiple: "shot", spanish: "disparar", page: 27, type: "verb" },
+        { base: "bleed", past: "bled", pastParticiple: "bled", spanish: "sangrar", page: 27, type: "verb" },
+        { base: "hide", past: "hid", pastParticiple: "hidden", spanish: "esconder", page: 27, type: "verb" },
+        { base: "beat", past: "beat", pastParticiple: "beat", spanish: "vencer / ganar", page: 27, type: "verb" },
+        { base: "dig", past: "dug", pastParticiple: "dug", spanish: "cavar", page: 27, type: "verb" },
+        { base: "freeze", past: "froze", pastParticiple: "frozen", spanish: "congelar", page: 27, type: "verb" },
+        { base: "grind", past: "ground", pastParticiple: "ground", spanish: "moler", page: 27, type: "verb" },
+        { base: "tear", past: "tore", pastParticiple: "torn", spanish: "rasgar", page: 27, type: "verb" },
+        { base: "hold", past: "held", pastParticiple: "held", spanish: "sostener", page: 27, type: "verb" },
+        { base: "swear", past: "swore", pastParticiple: "sworn", spanish: "jurar", page: 27, type: "verb" },
+        { base: "throw", past: "threw", pastParticiple: "thrown", spanish: "tirar / lanzar", page: 27, type: "verb" },
+        { base: "blow", past: "blew", pastParticiple: "blown", spanish: "soplar", page: 27, type: "verb" },
+        { base: "draw", past: "drew", pastParticiple: "drawn", spanish: "dibujar", page: 27, type: "verb" },
+        { base: "hit", past: "hit", pastParticiple: "hit", spanish: "golpear", page: 27, type: "verb" },
+        { base: "lay", past: "laid", pastParticiple: "laid", spanish: "colocar / poner", page: 27, type: "verb" },
+        { base: "set", past: "set", pastParticiple: "set", spanish: "poner / fijar", page: 27, type: "verb" },
+        { base: "strive", past: "strove", pastParticiple: "striven", spanish: "luchar", page: 27, type: "verb" },
+        { base: "shrink", past: "shrank", pastParticiple: "shrunk", spanish: "encogerse", page: 27, type: "verb" },
+
+        // PÁGINA 28 (ALGUNOS VERBOS COMUNES DE DOS PALABRAS)
+        { english: "go in", spanish: "entrar (ir)", page: 28, type: "noun" },
+        { english: "come in", spanish: "entrar (venir)", page: 28, type: "noun" },
+        { english: "get in", spanish: "entrar (subir)", page: 28, type: "noun" },
+        { english: "go out", spanish: "salir (ir)", page: 28, type: "noun" },
+        { english: "come out", spanish: "salir (venir)", page: 28, type: "noun" },
+        { english: "get out", spanish: "salir (bajarse)", page: 28, type: "noun" },
+        { english: "go back", spanish: "regresar (volver)", page: 28, type: "noun" },
+        { english: "come back", spanish: "regresar (venir otra vez)", page: 28, type: "noun" },
+        { english: "get back", spanish: "regresar (volver)", page: 28, type: "noun" },
+        { english: "go on", spanish: "continuar (seguir)", page: 28, type: "noun" },
+        { english: "keep on", spanish: "continuar (persistir)", page: 28, type: "noun" },
+        { english: "keep from", spanish: "impedir", page: 28, type: "noun" },
+        { english: "agree with", spanish: "estar de acuerdo con", page: 28, type: "noun" },
+        { english: "agree on", spanish: "estar de acuerdo", page: 28, type: "noun" },
+        { english: "look at", spanish: "mirar", page: 28, type: "noun" },
+        { english: "look for", spanish: "buscar", page: 28, type: "noun" },
+        { english: "find out", spanish: "averiguar", page: 28, type: "noun" },
+        { english: "count on", spanish: "contar con", page: 28, type: "noun" },
+        { english: "wait on", spanish: "atender", page: 28, type: "noun" },
+        { english: "wait for", spanish: "esperar", page: 28, type: "noun" },
+        { english: "give up", spanish: "rendirse", page: 28, type: "noun" },
+        { english: "pick up", spanish: "recoger", page: 28, type: "noun" },
+        { english: "pick out", spanish: "escoger", page: 28, type: "noun" },
+        { english: "call on", spanish: "visitar", page: 28, type: "noun" },
+        { english: "put on", spanish: "ponerse", page: 28, type: "noun" },
+        { english: "take off", spanish: "quitarse", page: 28, type: "noun" },
+        { english: "try on", spanish: "probarse", page: 28, type: "noun" },
+        { english: "take out", spanish: "sacar", page: 28, type: "noun" },
+        { english: "turn on", spanish: "prender", page: 28, type: "noun" },
+        { english: "turn off", spanish: "apagar", page: 28, type: "noun" },
+        { english: "get up", spanish: "levantarse", page: 28, type: "noun" },
+        { english: "think of", spanish: "pensar en (ocurrirse)", page: 28, type: "noun" },
+        { english: "think about", spanish: "pensar en (reflexionar)", page: 28, type: "noun" },
+        { english: "dream of", spanish: "soñar con (imaginar)", page: 28, type: "noun" },
+        { english: "dream about", spanish: "soñar con (durmiendo)", page: 28, type: "noun" },
+
+        // PÁGINA 29 (LA CIUDAD)
+        { english: "neighborhood", spanish: "barrio", page: 29, type: "noun" },
+        { english: "street", spanish: "calle", page: 29, type: "noun" },
+        { english: "badge", spanish: "placa (policía)", page: 29, type: "noun" },
+        { english: "sidewalk", spanish: "acera", page: 29, type: "noun" },
+        { english: "corner", spanish: "esquina", page: 29, type: "noun" },
+        { english: "way", spanish: "vía", page: 29, type: "noun" },
+        { english: "road", spanish: "carretera", page: 29, type: "noun" },
+        { english: "bridge", spanish: "puente", page: 29, type: "noun" },
+        { english: "highway", spanish: "autopista (principal)", page: 29, type: "noun" },
+        { english: "expressway", spanish: "autopista", page: 29, type: "noun" },
+        { english: "building", spanish: "edificio", page: 29, type: "noun" },
+        { english: "tower", spanish: "torre", page: 29, type: "noun" },
+        { english: "downtown", spanish: "centro de la ciudad", page: 29, type: "noun" },
+        { english: "shop", spanish: "taller", page: 29, type: "noun" },
+        { english: "store", spanish: "tienda", page: 29, type: "noun" },
+        { english: "shopping center", spanish: "centro comercial", page: 29, type: "noun" },
+        { english: "mall", spanish: "centro comercial", page: 29, type: "noun" },
+        { english: "supermarket", spanish: "supermercado", page: 29, type: "noun" },
+        { english: "parking lot", spanish: "parqueadero", page: 29, type: "noun" },
+        { english: "church", spanish: "iglesia", page: 29, type: "noun" },
+        { english: "museum", spanish: "museo", page: 29, type: "noun" },
+        { english: "stadium", spanish: "estadio", page: 29, type: "noun" },
+        { english: "coliseum", spanish: "coliseo", page: 29, type: "noun" },
+        { english: "bank", spanish: "banco", page: 29, type: "noun" },
+        { english: "bench", spanish: "banco (asiento)", page: 29, type: "noun" },
+        { english: "hospital", spanish: "hospital", page: 29, type: "noun" },
+        { english: "clinic", spanish: "clínica", page: 29, type: "noun" },
+        { english: "drugstore", spanish: "miscelánea", page: 29, type: "noun" },
+        { english: "pharmacy", spanish: "farmacia", page: 29, type: "noun" },
+        { english: "library", spanish: "biblioteca", page: 29, type: "noun" },
+        { english: "bookstore", spanish: "librería", page: 29, type: "noun" },
+        { english: "stationer's shop", spanish: "papelería", page: 29, type: "noun" },
+        { english: "bakery", spanish: "panadería", page: 29, type: "noun" },
+        { english: "cafeteria", spanish: "cafetería", page: 29, type: "noun" },
+        { english: "coffee shop", spanish: "cafetería", page: 29, type: "noun" },
+        { english: "laundry", spanish: "lavandería", page: 29, type: "noun" },
+        { english: "shoe store", spanish: "zapatería", page: 29, type: "noun" },
+        { english: "tailor shop", spanish: "sastrería", page: 29, type: "noun" },
+        { english: "dressmaker shop", spanish: "modistería", page: 29, type: "noun" },
+        { english: "barber shop", spanish: "peluquería", page: 29, type: "noun" },
+        { english: "jewelry store", spanish: "joyería", page: 29, type: "noun" },
+        { english: "newsstand", spanish: "kiosco periódicos", page: 29, type: "noun" },
+        { english: "police station", spanish: "estación policía", page: 29, type: "noun" },
+        { english: "bus station", spanish: "estación buses", page: 29, type: "noun" },
+        { english: "bus stop", spanish: "parada bus", page: 29, type: "noun" },
+        { english: "traffic light", spanish: "semáforo", page: 29, type: "noun" },
+        { english: "street sign", spanish: "señal tráfico", page: 29, type: "noun" },
+        { english: "one way", spanish: "una vía", page: 29, type: "noun" },
+        { english: "two way", spanish: "doble vía", page: 29, type: "noun" },
+        { english: "pedestrian", spanish: "transeúnte", page: 29, type: "noun" },
+        { english: "subway", spanish: "metro", page: 29, type: "noun" },
+
+        // PÁGINA 30 (COMUNICACIONES)
+        { english: "post office", spanish: "oficina correos", page: 30, type: "noun" },
+        { english: "mail", spanish: "correo", page: 30, type: "noun" },
+        { english: "postman", spanish: "cartero (británico)", page: 30, type: "noun" },
+        { english: "mailman", spanish: "cartero (estadounidense)", page: 30, type: "noun" },
+        { english: "mailbag", spanish: "bolsa correo", page: 30, type: "noun" },
+        { english: "mail truck", spanish: "camión correo", page: 30, type: "noun" },
+        { english: "mailbox", spanish: "buzón", page: 30, type: "noun" },
+        { english: "p.o. box", spanish: "apartado", page: 30, type: "noun" },
+        { english: "letter", spanish: "carta", page: 30, type: "noun" },
+        { english: "envelope", spanish: "sobre", page: 30, type: "noun" },
+        { english: "postage", spanish: "franqueo", page: 30, type: "noun" },
+        { english: "stamp", spanish: "estampilla", page: 30, type: "noun" },
+        { english: "receipt", spanish: "recibo", page: 30, type: "noun" },
+        { english: "zip code", spanish: "código postal", page: 30, type: "noun" },
+        { english: "post card", spanish: "tarjeta postal", page: 30, type: "noun" },
+        { english: "package", spanish: "paquete", page: 30, type: "noun" },
+        { english: "parcel post", spanish: "encomienda", page: 30, type: "noun" },
+        { english: "regular mail", spanish: "correo ordinario", page: 30, type: "noun" },
+        { english: "special delivery", spanish: "entrega inmediata", page: 30, type: "noun" },
+        { english: "money order", spanish: "giro postal", page: 30, type: "noun" },
+        { english: "cordless phone", spanish: "teléfono inalámbrico", page: 30, type: "noun" },
+        { english: "public phone", spanish: "teléfono público (general)", page: 30, type: "noun" },
+        { english: "pay phone", spanish: "teléfono público (de monedas)", page: 30, type: "noun" },
+        { english: "phone booth", spanish: "cabina telefónica", page: 30, type: "noun" },
+        { english: "phone book", spanish: "directorio", page: 30, type: "noun" },
+        { english: "receiver", spanish: "auricular", page: 30, type: "noun" },
+        { english: "cradle", spanish: "horquilla", page: 30, type: "noun" },
+        { english: "slot", spanish: "ranura", page: 30, type: "noun" },
+        { english: "fax", spanish: "fax", page: 30, type: "noun" },
+        { english: "computer", spanish: "computador", page: 30, type: "noun" },
+        { english: "laptop", spanish: "portátil", page: 30, type: "noun" },
+        { english: "keyboard", spanish: "teclado", page: 30, type: "noun" },
+        { english: "printer", spanish: "impresora", page: 30, type: "noun" },
+        { english: "television", spanish: "televisión", page: 30, type: "noun" },
+        { english: "screen", spanish: "pantalla", page: 30, type: "noun" },
+        { english: "internet", spanish: "internet", page: 30, type: "noun" },
+        { english: "e-mail", spanish: "correo electrónico", page: 30, type: "noun" },
+        { english: "radio", spanish: "radio", page: 30, type: "noun" },
+        { english: "radio station", spanish: "emisora", page: 30, type: "noun" },
+        { english: "newspaper", spanish: "periódico", page: 30, type: "noun" },
+        { english: "front page", spanish: "primera página", page: 30, type: "noun" },
+        { english: "headlines", spanish: "titulares", page: 30, type: "noun" },
+        { english: "magazine", spanish: "revista", page: 30, type: "noun" },
+
+        // PÁGINA 31 (TRANSPORTE)
+        { english: "vehicles", spanish: "vehículos", page: 31, type: "noun" },
+        { english: "bike", spanish: "bicicleta (informal)", page: 31, type: "noun" },
+        { english: "bicycle", spanish: "bicicleta (formal)", page: 31, type: "noun" },
+        { english: "cyclist", spanish: "ciclista", page: 31, type: "noun" },
+        { english: "motorcycle", spanish: "motocicleta", page: 31, type: "noun" },
+        { english: "scooter", spanish: "motoneta", page: 31, type: "noun" },
+        { english: "automobile", spanish: "automóvil", page: 31, type: "noun" },
+        { english: "car", spanish: "carro", page: 31, type: "noun" },
+        { english: "sports car", spanish: "carro deportivo", page: 31, type: "noun" },
+        { english: "taxi", spanish: "taxi (completo)", page: 31, type: "noun" },
+        { english: "cab", spanish: "taxi (abreviado)", page: 31, type: "noun" },
+        { english: "jeep", spanish: "campero", page: 31, type: "noun" },
+        { english: "van", spanish: "camioneta", page: 31, type: "noun" },
+        { english: "four wheel drive", spanish: "tracción 4 ruedas", page: 31, type: "noun" },
+        { english: "bus", spanish: "bus", page: 31, type: "noun" },
+        { english: "truck", spanish: "camión", page: 31, type: "noun" },
+        { english: "18-wheeler", spanish: "tractomula", page: 31, type: "noun" },
+        { english: "train", spanish: "tren", page: 31, type: "noun" },
+        { english: "plane", spanish: "avión", page: 31, type: "noun" },
+        { english: "helicopter", spanish: "helicóptero", page: 31, type: "noun" },
+        { english: "chopper", spanish: "helicóptero (Army)", page: 31, type: "noun" },
+        { english: "front door", spanish: "puerta delantera", page: 31, type: "noun" },
+        { english: "rear door", spanish: "puerta trasera", page: 31, type: "noun" },
+        { english: "rear-view mirror", spanish: "espejo retrovisor", page: 31, type: "noun" },
+        { english: "windshield", spanish: "parabrisas", page: 31, type: "noun" },
+        { english: "wipers", spanish: "limpiabrisas", page: 31, type: "noun" },
+        { english: "head-light", spanish: "luz delantera", page: 31, type: "noun" },
+        { english: "tail-light", spanish: "luz trasera", page: 31, type: "noun" },
+        { english: "wheel", spanish: "rueda", page: 31, type: "noun" },
+        { english: "steering wheel", spanish: "volante", page: 31, type: "noun" },
+        { english: "tire", spanish: "llanta", page: 31, type: "noun" },
+        { english: "rim", spanish: "rin", page: 31, type: "noun" },
+        { english: "spare tire", spanish: "llanta repuesto", page: 31, type: "noun" },
+        { english: "trunk", spanish: "maleta", page: 31, type: "noun" },
+        { english: "hood", spanish: "tapa", page: 31, type: "noun" },
+        { english: "jack", spanish: "gato", page: 31, type: "noun" },
+        { english: "tools", spanish: "herramientas", page: 31, type: "noun" },
+        { english: "horn", spanish: "pito", page: 31, type: "noun" },
+        { english: "honk", spanish: "pitar", page: 31, type: "noun" },
+        { english: "clutch", spanish: "cloch", page: 31, type: "noun" },
+        { english: "accelerator", spanish: "acelerador", page: 31, type: "noun" },
+        { english: "brake", spanish: "freno", page: 31, type: "noun" },
+        { english: "gas pedal", spanish: "pedal acelerador", page: 31, type: "noun" },
+        { english: "brake pedal", spanish: "pedal freno", page: 31, type: "noun" },
+        { english: "bumper", spanish: "parachoques", page: 31, type: "noun" },
+        { english: "engine", spanish: "motor (máquina)", page: 31, type: "noun" },
+        { english: "motor", spanish: "motor (general)", page: 31, type: "noun" },
+        { english: "battery", spanish: "batería", page: 31, type: "noun" },
+        { english: "radiator", spanish: "radiador", page: 31, type: "noun" },
+        { english: "spark plug", spanish: "bujía", page: 31, type: "noun" },
+        { english: "transmission", spanish: "transmisión", page: 31, type: "noun" },
+        { english: "gear", spanish: "piñón", page: 31, type: "noun" },
+        { english: "stick shift", spanish: "palanca cambios", page: 31, type: "noun" },
+        { english: "fuel", spanish: "gasolina", page: 31, type: "noun" },
+        { english: "oil", spanish: "aceite", page: 31, type: "noun" },
+        { english: "license plate", spanish: "placa", page: 31, type: "noun" },
+        { english: "driver's license", spanish: "licencia conducción", page: 31, type: "noun" },
+        { english: "insurance", spanish: "seguro", page: 31, type: "noun" },
+
+        // PÁGINA 32 (ANIMALES)
+        { english: "domestic animals", spanish: "animales domésticos", page: 32, type: "noun" },
+        { english: "dog", spanish: "perro", page: 32, type: "noun", phrase: { es: "Mi perro corre en el parque.", en: "My dog runs in the park" } },
+        { english: "cat", spanish: "gato", page: 32, type: "noun", phrase: { es: "El gato duerme todo el día.", en: "The cat sleeps all day" } },
+        { english: "horse", spanish: "caballo", page: 32, type: "noun", phrase: { es: "El caballo come en el campo.", en: "The horse eats in the field" } },
+        { english: "donkey", spanish: "burro", page: 32, type: "noun" },
+        { english: "mare", spanish: "yegua", page: 32, type: "noun" },
+        { english: "cow", spanish: "vaca", page: 32, type: "noun", phrase: { es: "La vaca es muy grande.", en: "The cow is very big" } },
+        { english: "bull", spanish: "toro", page: 32, type: "noun" },
+        { english: "calf", spanish: "ternero", page: 32, type: "noun" },
+        { english: "lamb", spanish: "cordero", page: 32, type: "noun" },
+        { english: "pig", spanish: "cerdo", page: 32, type: "noun" },
+        { english: "goat", spanish: "cabra", page: 32, type: "noun" },
+        { english: "sheep", spanish: "oveja", page: 32, type: "noun" },
+        { english: "camel", spanish: "camello", page: 32, type: "noun" },
+        { english: "buffalo", spanish: "búfalo", page: 32, type: "noun" },
+        { english: "moose", spanish: "alce", page: 32, type: "noun" },
+        { english: "wild animals", spanish: "animales salvajes", page: 32, type: "noun" },
+        { english: "lion", spanish: "león", page: 32, type: "noun", phrase: { es: "El león corre rápido.", en: "The lion runs fast" } },
+        { english: "tiger", spanish: "tigre", page: 32, type: "noun", phrase: { es: "Ese tigre es hermoso.", en: "That tiger is beautiful" } },
+        { english: "panther", spanish: "pantera", page: 32, type: "noun" },
+        { english: "leopard", spanish: "leopardo", page: 32, type: "noun" },
+        { english: "bear", spanish: "oso", page: 32, type: "noun" },
+        { english: "monkey", spanish: "mico", page: 32, type: "noun", phrase: { es: "El mico juega en el árbol.", en: "The monkey plays in the tree" } },
+        { english: "gorilla", spanish: "gorila", page: 32, type: "noun" },
+        { english: "elephant", spanish: "elefante", page: 32, type: "noun", phrase: { es: "Un elefante bebe agua.", en: "An elephant drinks water" } },
+        { english: "hippopotamus", spanish: "hipopótamo", page: 32, type: "noun" },
+        { english: "rhinoceros", spanish: "rinoceronte", page: 32, type: "noun" },
+        { english: "zebra", spanish: "cebra", page: 32, type: "noun" },
+        { english: "giraffe", spanish: "jirafa", page: 32, type: "noun" },
+        { english: "deer", spanish: "ciervo", page: 32, type: "noun" },
+        { english: "fox", spanish: "zorro", page: 32, type: "noun" },
+        { english: "wolf", spanish: "lobo", page: 32, type: "noun" },
+        { english: "kangaroo", spanish: "canguro", page: 32, type: "noun" },
+        { english: "rabbit", spanish: "conejo", page: 32, type: "noun" },
+        { english: "beaver", spanish: "castor", page: 32, type: "noun" },
+        { english: "crocodile", spanish: "cocodrilo", page: 32, type: "noun" },
+        { english: "snake", spanish: "culebra", page: 32, type: "noun" },
+        { english: "skunk", spanish: "zorrillo", page: 32, type: "noun" },
+        { english: "birds", spanish: "aves", page: 32, type: "noun" },
+        { english: "hen", spanish: "gallina", page: 32, type: "noun" },
+        { english: "rooster", spanish: "gallo", page: 32, type: "noun" },
+        { english: "chicken", spanish: "pollo", page: 32, type: "noun" },
+        { english: "duck", spanish: "pato", page: 32, type: "noun" },
+        { english: "goose", spanish: "ganso", page: 32, type: "noun" },
+        { english: "swan", spanish: "cisne", page: 32, type: "noun" },
+        { english: "turkey", spanish: "pavo", page: 32, type: "noun" },
+        { english: "ostrich", spanish: "avestruz", page: 32, type: "noun" },
+        { english: "eagle", spanish: "águila", page: 32, type: "noun", phrase: { es: "El águila vuela muy alto.", en: "The eagle flies very high" } },
+        { english: "parrot", spanish: "loro", page: 32, type: "noun" },
+        { english: "dove", spanish: "paloma", page: 32, type: "noun" },
+        { english: "pigeon", spanish: "paloma (de ciudad)", page: 32, type: "noun" },
+        { english: "owl", spanish: "búho", page: 32, type: "noun" },
+        { english: "sea gull", spanish: "gaviota", page: 32, type: "noun" },
+        { english: "swallow", spanish: "golondrina", page: 32, type: "noun" },
+        { english: "vulture", spanish: "gallinazo", page: 32, type: "noun" },
+        { english: "sea animals", spanish: "animales de mar", page: 32, type: "noun" },
+        { english: "fish", spanish: "pez", page: 32, type: "noun" },
+        { english: "whale", spanish: "ballena", page: 32, type: "noun" },
+        { english: "shark", spanish: "tiburón", page: 32, type: "noun" },
+        { english: "dolphin", spanish: "delfín", page: 32, type: "noun" },
+        { english: "seal", spanish: "foca", page: 32, type: "noun" },
+        { english: "octopus", spanish: "pulpo", page: 32, type: "noun" },
+        { english: "alligator", spanish: "caimán", page: 32, type: "noun" },
+        { english: "snail", spanish: "caracol", page: 32, type: "noun" },
+        { english: "frog", spanish: "rana", page: 32, type: "noun" },
+        { english: "toad", spanish: "sapo", page: 32, type: "noun" },
+        { english: "turtle", spanish: "turquesa", page: 32, type: "noun" },
+        { english: "insects", spanish: "insectos", page: 32, type: "noun" },
+        { english: "cockroach", spanish: "cucaracha", page: 32, type: "noun" },
+        { english: "fly", spanish: "mosca", page: 32, type: "noun" },
+        { english: "bee", spanish: "abeja", page: 32, type: "noun", phrase: { es: "La abeja está en el jardín.", en: "The bee is in the garden" } },
+        { english: "ant", spanish: "hormiga", page: 32, type: "noun", phrase: { es: "Una pequeña hormiga camina por ahí.", en: "A small ant walks there" } },
+        { english: "wasp", spanish: "avispa", page: 32, type: "noun" },
+        { english: "cricket", spanish: "grillo", page: 32, type: "noun" },
+        { english: "worm", spanish: "lombriz", page: 32, type: "noun" },
+        { english: "flea", spanish: "pulga", page: 32, type: "noun" },
+        { english: "bedbug", spanish: "chinche", page: 32, type: "noun" },
+        { english: "louse", spanish: "piojo", page: 32, type: "noun" },
+        { english: "beetle", spanish: "escarabajo", page: 32, type: "noun" },
+        { english: "butterfly", spanish: "mariposa", page: 32, type: "noun" },
+
+        // PÁGINA 33 (HERRAMIENTAS)
+        { english: "screwdriver", spanish: "destornillador", page: 33, type: "noun" },
+        { english: "hammer", spanish: "martillo", page: 33, type: "noun" },
+        { english: "pliers", spanish: "alicates", page: 33, type: "noun" },
+        { english: "wrench", spanish: "llave", page: 33, type: "noun" },
+        { english: "monkey wrench", spanish: "llave de tubo", page: 33, type: "noun" },
+        { english: "spanner", spanish: "llave de expansión", page: 33, type: "noun" },
+        { english: "drill", spanish: "taladro", page: 33, type: "noun" },
+        { english: "bit", spanish: "broca", page: 33, type: "noun" },
+        { english: "vise", spanish: "prensa", page: 33, type: "noun" },
+        { english: "file", spanish: "lima", page: 33, type: "noun" },
+        { english: "saw", spanish: "sierra", page: 33, type: "noun" },
+        { english: "handsaw", spanish: "serrucho", page: 33, type: "noun" },
+        { english: "screw", spanish: "tornillo", page: 33, type: "noun" },
+        { english: "bolt", spanish: "perno", page: 33, type: "noun" },
+        { english: "nut", spanish: "tuerca", page: 33, type: "noun" },
+        { english: "washer", spanish: "arandela", page: 33, type: "noun" },
+        { english: "nail", spanish: "clavo", page: 33, type: "noun" },
+        { english: "wire", spanish: "alambre", page: 33, type: "noun" },
+        { english: "key", spanish: "llave", page: 33, type: "noun" },
+        { english: "key ring", spanish: "llavero", page: 33, type: "noun" },
+        { english: "lock", spanish: "candado", page: 33, type: "noun" },
+        { english: "switch", spanish: "interruptor", page: 33, type: "noun" },
+        { english: "plug", spanish: "enchufe", page: 33, type: "noun" },
+        { english: "rake", spanish: "rastrillo", page: 33, type: "noun" },
+        { english: "ladder", spanish: "escalera", page: 33, type: "noun" },
+        { english: "shovel", spanish: "pala", page: 33, type: "noun" },
+        { english: "pick", spanish: "pico", page: 33, type: "noun" },
+        { english: "axe", spanish: "hacha", page: 33, type: "noun" },
+        { english: "trowel", spanish: "palustre", page: 33, type: "noun" },
+        { english: "level", spanish: "nivel", page: 33, type: "noun" },
+        { english: "wagon", spanish: "carreta", page: 33, type: "noun" },
+        { english: "tape", spanish: "cinta", page: 33, type: "noun" },
+        { english: "ribbon", spanish: "cinta", page: 33, type: "noun" },
+        { english: "stapler", spanish: "cosedora", page: 33, type: "noun" },
+        { english: "hook", spanish: "gancho", page: 33, type: "noun" },
+        { english: "hanger", spanish: "gancho", page: 33, type: "noun" },
+        { english: "seal", spanish: "sello", page: 33, type: "noun" },
+        { english: "clip", spanish: "sujetador", page: 33, type: "noun" },
+        { english: "scissors", spanish: "tijeras", page: 33, type: "noun" },
+        { english: "glue", spanish: "pegante", page: 33, type: "noun" },
+        { english: "lantern", spanish: "linterna (farol)", page: 33, type: "noun" },
+        { english: "flashlight", spanish: "linterna (de mano)", page: 33, type: "noun" },
+        { english: "candle", spanish: "vela", page: 33, type: "noun" },
+        { english: "match", spanish: "fósforo", page: 33, type: "noun" },
+        { english: "magnifying glass", spanish: "lente de aumento", page: 33, type: "noun" },
+        { english: "balance", spanish: "balanza", page: 33, type: "noun" },
+        { english: "pipe", spanish: "pipa", page: 33, type: "noun" },
+        { english: "cane", spanish: "bastón", page: 33, type: "noun" },
+        { english: "stick", spanish: "bastón", page: 33, type: "noun" },
+        { english: "thermometer", spanish: "termómetro", page: 33, type: "noun" },
+        { english: "pin", spanish: "alfiler", page: 33, type: "noun" },
+
+        // PÁGINA 34 (MICELANEOS)
+        { english: "sour fruits", spanish: "frutas ácidas", page: 34, type: "noun" },
+        { english: "orange", spanish: "naranja", page: 34, type: "noun" },
+        { english: "tangerine", spanish: "mandarina", page: 34, type: "noun" },
+        { english: "lemon", spanish: "limón", page: 34, type: "noun" },
+        { english: "apple", spanish: "manzana", page: 34, type: "noun" },
+        { english: "pineapple", spanish: "piña", page: 34, type: "noun" },
+        { english: "kiwi", spanish: "kiwi", page: 34, type: "noun" },
+        { english: "fig", spanish: "breva", page: 34, type: "noun" },
+        { english: "grapes", spanish: "uvas", page: 34, type: "noun" },
+        { english: "grapefruit", spanish: "toronja", page: 34, type: "noun" },
+        { english: "raisin", spanish: "pasa", page: 34, type: "noun" },
+        { english: "lime", spanish: "lima", page: 34, type: "noun" },
+        { english: "plum", spanish: "ciruela", page: 34, type: "noun" },
+        { english: "peach", spanish: "durazno", page: 34, type: "noun" },
+        { english: "berry", spanish: "mora", page: 34, type: "noun" },
+        { english: "strawberry", spanish: "fresa", page: 34, type: "noun" },
+        { english: "pear", spanish: "pera", page: 34, type: "noun" },
+        { english: "cherry", spanish: "cereza", page: 34, type: "noun" },
+        { english: "date", spanish: "dátil", page: 34, type: "noun" },
+        { english: "pomegranate", spanish: "granadilla", page: 34, type: "noun" },
+        { english: "coconut", spanish: "coco", page: 34, type: "noun" },
+        { english: "soursop", spanish: "guanábana", page: 34, type: "noun" },
+        { english: "tamarind", spanish: "tamarindo", page: 34, type: "noun" },
+        { english: "sweet fruits", spanish: "frutas dulces", page: 34, type: "noun" },
+        { english: "papaya", spanish: "papaya", page: 34, type: "noun" },
+        { english: "guava", spanish: "guayaba", page: 34, type: "noun" },
+        { english: "mango", spanish: "mango", page: 34, type: "noun" },
+        { english: "banana", spanish: "banano", page: 34, type: "noun" },
+        { english: "melon", spanish: "melón", page: 34, type: "noun" },
+        { english: "watermelon", spanish: "sandía", page: 34, type: "noun" },
+        { english: "sports", spanish: "deportes", page: 34, type: "noun" },
+        { english: "football", spanish: "fútbol (británico)", page: 34, type: "noun" },
+        { english: "soccer", spanish: "fútbol (EE. UU.)", page: 34, type: "noun" },
+        { english: "basketball", spanish: "básquetbol", page: 34, type: "noun" },
+        { english: "volleyball", spanish: "voleibol", page: 34, type: "noun" },
+        { english: "hockey", spanish: "hockey", page: 34, type: "noun" },
+        { english: "golf", spanish: "golf", page: 34, type: "noun" },
+        { english: "tennis", spanish: "tenis", page: 34, type: "noun" },
+        { english: "swimming", spanish: "natación", page: 34, type: "noun" },
+        { english: "boxing", spanish: "boxeo", page: 34, type: "noun" },
+        { english: "cycling", spanish: "ciclismo", page: 34, type: "noun" },
+        { english: "gymnastics", spanish: "gimnasia", page: 34, type: "noun" },
+        { english: "athletics", spanish: "atletismo", page: 34, type: "noun" },
+        { english: "professions", spanish: "profesiones", page: 34, type: "noun" },
+        { english: "engineer", spanish: "ingeniero", page: 34, type: "noun" },
+        { english: "architect", spanish: "arquitecto", page: 34, type: "noun" },
+        { english: "lawyer", spanish: "abogado", page: 34, type: "noun" },
+        { english: "doctor", spanish: "doctor", page: 34, type: "noun" },
+        { english: "dentist", spanish: "dentista", page: 34, type: "noun" },
+        { english: "judge", spanish: "juez", page: 34, type: "noun" },
+        { english: "nurse", spanish: "enfermera", page: 34, type: "noun" },
+        { english: "journalist", spanish: "periodista", page: 34, type: "noun" },
+        { english: "mechanic", spanish: "mecánico", page: 34, type: "noun" },
+        { english: "mason", spanish: "albañil", page: 34, type: "noun" },
+        { english: "secretary", spanish: "secretaria", page: 34, type: "noun" },
+        { english: "manager", spanish: "gerente", page: 34, type: "noun" },
+        { english: "sportsman", spanish: "deportista", page: 34, type: "noun" },
+        { english: "writer", spanish: "escritor", page: 34, type: "noun" },
+        { english: "policeman", spanish: "policia", page: 34, type: "noun" },
+        { english: "musician", spanish: "músico", page: 34, type: "noun" },
+        { english: "singer", spanish: "cantante", page: 34, type: "noun" },
+        { english: "artist", spanish: "artista", page: 34, type: "noun" },
+        { english: "actor", spanish: "actor", page: 34, type: "noun" },
+        { english: "actress", spanish: "actriz", page: 34, type: "noun" },
+        { english: "politician", spanish: "político", page: 34, type: "noun" }
+    ];
+
+        let selectedPage = "all"; // 'all' or page number
+        let selectedRange = "all"; // 'all' or range like "0-5"
+        let pageFilteredWords = [...vocabData];
+        let rangeFilteredWords = [...pageFilteredWords];
+        let availableWords = [...rangeFilteredWords];
+        let currentWord = null;
+        let isAnswered = false;
+        let isFlipped = false;
+        let isFlashcardMode = false;
+        const RANGE_SIZE = 5; // Estudiar de 5 en 5
+        let autoAdvanceTimer = null;
+
+        // Sound Synthesizer (Web Audio API)
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSynthesizedSound(type) {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                const now = ctx.currentTime;
+
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(140, now + 0.12);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'flip') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(550, now + 0.08);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {}
+        }
+
+        function setupPageDropdown() {
+            const dropdown = document.getElementById('pageSelect');
+            dropdown.innerHTML = '';
+
+            // Option 1: All pages
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = `Todas las páginas (${vocabData.length} palabras)`;
+            dropdown.appendChild(allOption);
+
+            // Options per page
+            const sortedPages = Object.keys(pageNames).map(Number).sort((a,b) => a - b);
+            sortedPages.forEach(pNum => {
+                const count = vocabData.filter(item => item.page === pNum).length;
+                if (count > 0) {
+                    const option = document.createElement('option');
+                    option.value = pNum;
+                    option.textContent = `Pág. ${pNum}: ${pageNames[pNum]} (${count})`;
+                    dropdown.appendChild(option);
+                }
+            });
+
+            dropdown.value = selectedPage;
+        }
+
+        function setupRangeDropdown() {
+            const dropdown = document.getElementById('rangeSelect');
+            dropdown.innerHTML = '';
+
+            // Option 1: All words
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = `Todas las palabras (${pageFilteredWords.length})`;
+            dropdown.appendChild(allOption);
+
+            // Options per range
+            if (pageFilteredWords.length > RANGE_SIZE) {
+                const totalRanges = Math.ceil(pageFilteredWords.length / RANGE_SIZE);
+                for (let i = 0; i < totalRanges; i++) {
+                    const start = i * RANGE_SIZE + 1;
+                    const end = Math.min((i + 1) * RANGE_SIZE, pageFilteredWords.length);
+                    const option = document.createElement('option');
+                    option.value = `${i * RANGE_SIZE}-${(i + 1) * RANGE_SIZE - 1}`;
+                    option.textContent = `Palabras ${start}-${end}`;
+                    dropdown.appendChild(option);
+                }
+            }
+
+            dropdown.value = selectedRange;
+        }
+
+        function onRangeChange() {
+            selectedRange = document.getElementById('rangeSelect').value;
+            saveState();
+            applyRangeFilter();
+            
+            if (isFlipped) {
+                document.getElementById('cardWrapper').classList.remove('flipped');
+                isFlipped = false;
+            }
+            
+            nextWord();
+            updateRangeInfo();
+        }
+
+        function applyRangeFilter() {
+            if (selectedRange === 'all') {
+                rangeFilteredWords = [...pageFilteredWords];
+            } else {
+                const [start, end] = selectedRange.split('-').map(Number);
+                rangeFilteredWords = pageFilteredWords.slice(start, end + 1);
+            }
+            
+            availableWords = [...rangeFilteredWords];
+        }
+
+        function updateRangeInfo() {
+            const info = document.getElementById('rangeInfo');
+            if (selectedRange === 'all') {
+                info.textContent = `Estudiando todas las palabras`;
+            } else {
+                const [start, end] = selectedRange.split('-').map(Number);
+                const actual_start = start + 1;
+                const actual_end = Math.min(end + 1, pageFilteredWords.length);
+                info.textContent = `Grupo: palabras ${actual_start}-${actual_end} de ${pageFilteredWords.length}`;
+            }
+        }
+
+        function onPageChange() {
+            selectedPage = document.getElementById('pageSelect').value;
+            selectedRange = 'all'; // Reset range when page changes
+            saveState();
+
+            if (selectedPage === 'all') {
+                pageFilteredWords = [...vocabData];
+            } else {
+                const pageNum = parseInt(selectedPage, 10);
+                pageFilteredWords = vocabData.filter(item => item.page === pageNum);
+            }
+
+            document.getElementById('wordCountBadge').textContent = `${pageFilteredWords.length} palabras`;
+
+            // Setup and apply range
+            setupRangeDropdown();
+            applyRangeFilter();
+            updateRangeInfo();
+
+            if (isFlipped) {
+                document.getElementById('cardWrapper').classList.remove('flipped');
+                isFlipped = false;
+            }
+
+            nextWord();
+        }
+
+        function toggleMode() {
+            isFlashcardMode = document.getElementById('modeToggle').checked;
+            document.getElementById('modeStatusText').textContent = isFlashcardMode 
+                ? "Activado (Inglés ➔ Español)" 
+                : "Desactivado (Escribir en Inglés)";
+            
+            saveState();
+            if (isFlipped) {
+                flipBackAndNext();
+            } else {
+                renderCardContent();
+            }
+        }
+
+        function renderCardContent() {
+            if (!currentWord) return;
+
+            const pageTitle = pageNames[currentWord.page] || `Página ${currentWord.page}`;
+            const categoryTag = `PÁG. ${currentWord.page} • ${pageTitle}`;
+
+            document.getElementById('categoryBadge').textContent = categoryTag;
+            document.getElementById('categoryBadgeBack').textContent = categoryTag;
+
+            const inputContainer = document.getElementById('inputContainer');
+            const actionRow = document.getElementById('actionRow');
+            const mainBtnIcon = document.getElementById('mainBtnIcon');
+            const mainBtnText = document.getElementById('mainBtnText');
+
+            // Detectar si es verbo irregular
+            const isIrregularVerb = currentWord.base && currentWord.past && currentWord.pastParticiple;
+            
+            if (isFlashcardMode) {
+                // Flashcard Mode (Inglés -> Español)
+                if (isIrregularVerb) {
+                    document.getElementById('spanishWord').textContent = `${currentWord.base} / ${currentWord.past} / ${currentWord.pastParticiple}`;
+                    document.getElementById('cardSubtitle').textContent = "Base / Pasado / Participio (Haz clic para ver)";
+                    
+                    document.getElementById('revealedSpanish').textContent = currentWord.spanish;
+                    document.getElementById('backSubtitle').textContent = "Traducción en español:";
+                    document.getElementById('englishWord').innerHTML = `<strong>Base:</strong> ${currentWord.base}<br><strong>Pasado:</strong> ${currentWord.past}<br><strong>Participio:</strong> ${currentWord.pastParticiple}`;
+                } else {
+                    document.getElementById('spanishWord').textContent = currentWord.english;
+                    document.getElementById('cardSubtitle').textContent = "Inglés (Haz clic para ver en español)";
+                    
+                    document.getElementById('revealedSpanish').textContent = currentWord.spanish;
+                    document.getElementById('backSubtitle').textContent = "Traducción en español:";
+                    document.getElementById('englishWord').textContent = currentWord.english;
+                }
+
+                inputContainer.style.display = 'none';
+                actionRow.style.display = 'none';
+
+                mainBtnIcon.className = 'fas fa-eye';
+                mainBtnText.textContent = 'Voltear / Ver Traducción (Enter)';
+            } else {
+                // Writing Mode (Español -> Inglés)
+                document.getElementById('spanishWord').textContent = currentWord.spanish;
+                document.getElementById('cardSubtitle').textContent = isIrregularVerb ? "¿Cuáles son las 3 formas?" : "Traduce la palabra al inglés";
+
+                document.getElementById('revealedSpanish').textContent = currentWord.spanish;
+                
+                if (isIrregularVerb) {
+                    document.getElementById('backSubtitle').textContent = "Formas correctas:";
+                    document.getElementById('englishWord').innerHTML = `<strong>Base:</strong> ${currentWord.base}<br><strong>Pasado:</strong> ${currentWord.past}<br><strong>Participio:</strong> ${currentWord.pastParticiple}`;
+                } else {
+                    document.getElementById('backSubtitle').textContent = "Respuesta correcta:";
+                    document.getElementById('englishWord').textContent = currentWord.english;
+                }
+
+                inputContainer.style.display = 'block';
+                actionRow.style.display = 'grid';
+
+                if (isAnswered) {
+                    mainBtnIcon.className = 'fas fa-arrow-right';
+                    mainBtnText.textContent = 'Siguiente Palabra (Enter)';
+                } else {
+                    mainBtnIcon.className = 'fas fa-check';
+                    mainBtnText.textContent = 'Verificar (Enter)';
+                }
+            }
+        }
+
+        function nextWord() {
+            if (autoAdvanceTimer) {
+                clearTimeout(autoAdvanceTimer);
+                autoAdvanceTimer = null;
+            }
+
+            if (availableWords.length === 0) {
+                availableWords = [...pageFilteredWords];
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableWords.length);
+            currentWord = availableWords.splice(randomIndex, 1)[0];
+            isAnswered = false;
+
+            clearFeedback();
+            renderCardContent();
+
+            // Reset Input
+            const input = document.getElementById('answerInput');
+            input.value = '';
+            input.className = 'answer-input';
+            if (!isFlashcardMode) {
+                setTimeout(() => input.focus(), 50);
+            }
+        }
+
+        function playPronunciation() {
+            if (!('speechSynthesis' in window) || !currentWord) return;
+            window.speechSynthesis.cancel();
+            
+            // Detectar si es verbo irregular
+            const isIrregularVerb = currentWord.base && currentWord.past && currentWord.pastParticiple;
+            
+            // Speak English phrase cleanly (without parentheses)
+            const textToSpeak = isIrregularVerb 
+                ? `${currentWord.base}, ${currentWord.past}, ${currentWord.pastParticiple}`
+                : currentWord.english.replace(/^to\s+/i, '');
+            
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function flipCard() {
+            const wrapper = document.getElementById('cardWrapper');
+            isFlipped = !isFlipped;
+            playSynthesizedSound('flip');
+
+            if (isFlipped) {
+                wrapper.classList.add('flipped');
+                playPronunciation();
+            } else {
+                wrapper.classList.remove('flipped');
+            }
+        }
+
+        function flipBackAndNext() {
+            if (autoAdvanceTimer) {
+                clearTimeout(autoAdvanceTimer);
+                autoAdvanceTimer = null;
+            }
+
+            const wrapper = document.getElementById('cardWrapper');
+            if (isFlipped) {
+                wrapper.classList.remove('flipped');
+                isFlipped = false;
+                setTimeout(() => {
+                    nextWord();
+                }, 300);
+            } else {
+                nextWord();
+            }
+        }
+
+        function cleanString(str) {
+            return str.trim().toLowerCase()
+                .replace(/^to\s+/i, '') // handle 'to study' vs 'study'
+                .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+                .replace(/\s+/g, " ");
+        }
+
+        function checkAnswer(inputVal) {
+            const cleanInput = cleanString(inputVal);
+            const inputElem = document.getElementById('answerInput');
+            const feedbackElem = document.getElementById('feedbackMessage');
+
+            isAnswered = true;
+
+            // Detectar si es verbo irregular
+            const isIrregularVerb = currentWord.base && currentWord.past && currentWord.pastParticiple;
+            let isCorrect = false;
+
+            if (isIrregularVerb) {
+                // Para verbos irregulares, aceptar cualquiera de las 3 formas
+                const cleanBase = cleanString(currentWord.base);
+                const cleanPast = cleanString(currentWord.past);
+                const cleanParticiple = cleanString(currentWord.pastParticiple);
+                
+                isCorrect = cleanInput === cleanBase || cleanInput === cleanPast || cleanInput === cleanParticiple;
+            } else {
+                // Para palabras normales
+                const cleanCorrect = cleanString(currentWord.english);
+                isCorrect = cleanInput === cleanCorrect;
+            }
+
+            if (isCorrect) {
+                inputElem.className = 'answer-input correct';
+                feedbackElem.className = 'feedback-message show success';
+                feedbackElem.innerHTML = '<i class="fas fa-circle-check"></i> ¡Correcto!';
+                
+                playSynthesizedSound('success');
+                playPronunciation();
+
+                if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+                autoAdvanceTimer = setTimeout(() => {
+                    if (isAnswered) nextWord();
+                }, 850);
+            } else {
+                inputElem.className = 'answer-input wrong';
+                feedbackElem.className = 'feedback-message show error';
+                
+                if (isIrregularVerb) {
+                    feedbackElem.innerHTML = `<i class="fas fa-circle-xmark"></i> Correcto: <b>${currentWord.base}</b> / <b>${currentWord.past}</b> / <b>${currentWord.pastParticiple}</b>`;
+                } else {
+                    feedbackElem.innerHTML = `<i class="fas fa-circle-xmark"></i> Correcto: <b>${currentWord.english}</b>`;
+                }
+                
+                playSynthesizedSound('error');
+            }
+
+            document.getElementById('mainBtnIcon').className = 'fas fa-arrow-right';
+            document.getElementById('mainBtnText').textContent = 'Siguiente Palabra (Enter)';
+        }
+
+        function handleMainAction() {
+            if (autoAdvanceTimer) {
+                clearTimeout(autoAdvanceTimer);
+                autoAdvanceTimer = null;
+                nextWord();
+                return;
+            }
+
+            if (isFlashcardMode) {
+                if (isFlipped) {
+                    flipBackAndNext();
+                } else {
+                    flipCard();
+                }
+                return;
+            }
+
+            if (isFlipped) {
+                flipBackAndNext();
+                return;
+            }
+
+            if (isAnswered) {
+                nextWord();
+            } else {
+                const inputVal = document.getElementById('answerInput').value.trim();
+                if (inputVal) {
+                    checkAnswer(inputVal);
+                } else {
+                    skipWord();
+                }
+            }
+        }
+
+        function skipWord() {
+            if (isFlipped) {
+                flipBackAndNext();
+            } else {
+                nextWord();
+            }
+        }
+
+        function clearFeedback() {
+            const feedbackElem = document.getElementById('feedbackMessage');
+            if (feedbackElem) {
+                feedbackElem.className = 'feedback-message';
+                feedbackElem.innerHTML = '';
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('vocab_express_page_state', JSON.stringify({ 
+                isFlashcardMode,
+                selectedPage,
+                selectedRange
+            }));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('vocab_express_page_state');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    isFlashcardMode = data.isFlashcardMode || false;
+                    selectedPage = data.selectedPage || 'all';
+                    selectedRange = data.selectedRange || 'all';
+
+                    const toggle = document.getElementById('modeToggle');
+                    if (toggle) {
+                        toggle.checked = isFlashcardMode;
+                        document.getElementById('modeStatusText').textContent = isFlashcardMode 
+                            ? "Activado (Inglés ➔ Español)" 
+                            : "Desactivado (Escribir en Inglés)";
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function resetProgress() {
+            selectedRange = 'all';
+            applyRangeFilter();
+            updateRangeInfo();
+            document.getElementById('rangeSelect').value = 'all';
+            if (isFlipped) {
+                document.getElementById('cardWrapper').classList.remove('flipped');
+                isFlipped = false;
+            }
+            nextWord();
+        }
+
+        // Keyboard Event Listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleMainAction();
+            } else if (e.key === ' ' && document.activeElement !== document.getElementById('answerInput')) {
+                e.preventDefault();
+                playPronunciation();
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                skipWord();
+            }
+        });
+
+        // Initialize App
+        window.onload = () => {
+            loadState();
+            setupPageDropdown();
+            
+            // Process page selection
+            if (selectedPage === 'all') {
+                pageFilteredWords = [...vocabData];
+            } else {
+                const pageNum = parseInt(selectedPage, 10);
+                pageFilteredWords = vocabData.filter(item => item.page === pageNum);
+            }
+            
+            document.getElementById('wordCountBadge').textContent = `${pageFilteredWords.length} palabras`;
+            
+            // Setup range and apply filter
+            setupRangeDropdown();
+            applyRangeFilter();
+            updateRangeInfo();
+            
+            nextWord();
+        };
+    </script>
+</body>
+</html>
